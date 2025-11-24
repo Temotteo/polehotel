@@ -30,8 +30,9 @@
         <div class="dropdown">
           <button class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">{{ 'PT' if lang=='pt' else 'EN' }}</button>
           <ul class="dropdown-menu dropdown-menu-end">
-            <li><a class="dropdown-item" href="{{ url_for(request.endpoint, **request.view_args, **request.args.to_dict()|dict(lang='pt')) }}">Português</a></li>
-            <li><a class="dropdown-item" href="{{ url_for(request.endpoint, **request.view_args, **request.args.to_dict()|dict(lang='en')) }}">English</a></li>
+            <li><a class="dropdown-item" href="{{ with_lang(request.endpoint, lang='pt') }}">Português</a></li>
+            <li><a class="dropdown-item" href="{{ with_lang(request.endpoint, lang='en') }}">English</a></li>
+
           </ul>
         </div>
       </div>
