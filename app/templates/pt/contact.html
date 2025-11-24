@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+{% block title %} — Contactos{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Contactos</h2>
+  <div class="row g-4">
+    <div class="col-md-6">
+      <form method="post">
+        <div class="mb-3">
+          <label class="form-label">Nome</label>
+          <input class="form-control" name="name" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Mensagem</label>
+          <textarea class="form-control" rows="4" name="message" required></textarea>
+        </div>
+        <button class="btn btn-primary">Enviar</button>
+        <a class="btn btn-outline-dark ms-2" href="https://wa.me/###########" target="_blank">WhatsApp</a>
+      </form>
+    </div>
+    <div class="col-md-6">
+      <div class="p-4 bg-white rounded-4">
+        <h6 class="section-title">Detalhes</h6>
+        <p>Telefone, email e redes sociais.</p>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

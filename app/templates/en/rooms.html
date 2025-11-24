@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %} — Rooms{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Rooms & Suites</h2>
+  <p>Categories list with description, gallery and booking CTA.</p>
+  <div class="row g-4">
+    {% for i in range(1,4) %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='img/rooms/room'+i|string+'.jpg') }}" class="card-img-top" alt="Room {{ i }}">
+        <div class="card-body">
+          <h5 class="card-title">Category {{ i }}</h5>
+          <p class="card-text">Short description for room category {{ i }}.</p>
+          <a class="btn btn-primary">Book</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

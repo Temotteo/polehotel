@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block title %} — Location{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Location</h2>
+  <div class="ratio ratio-16x9 rounded-4">
+    <iframe src="https://maps.google.com/maps?q=Maputo&t=&z=13&ie=UTF8&iwloc=&output=embed" referrerpolicy="no-referrer-when-downgrade"></iframe>
+  </div>
+  <ul class="mt-3">
+    <li>Airport distance: 10 km</li>
+    <li>City center: 2 km</li>
+  </ul>
+</div>
+{% endblock %}

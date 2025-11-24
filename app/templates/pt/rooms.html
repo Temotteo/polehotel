@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+{% block title %} — Quartos{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-4">Quartos e Acomodações</h2>
+  <p>Lista de categorias com descrição, galeria e CTA para reserva.</p>
+  <div class="row g-4">
+    {% for i in range(1,4) %}
+    <div class="col-md-4">
+      <div class="card h-100">
+        <img src="{{ url_for('static', filename='img/rooms/room'+i|string+'.jpg') }}" class="card-img-top" alt="Quarto {{ i }}">
+        <div class="card-body">
+          <h5 class="card-title">Categoria {{ i }}</h5>
+          <p class="card-text">Descrição breve da categoria do quarto {{ i }}.</p>
+          <a class="btn btn-primary">Reservar</a>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

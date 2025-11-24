@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} — Official Website{% endblock %}
+{% block content %}
+<section class="hero" style="background-image:url('{{ url_for('static', filename='img/hero.jpg') }}');">
+  <div class="container text-center text-white">
+    <h1 class="display-5 fw-bold">Pole Hotel</h1>
+    <p class="lead">Minimal elegance. Authentic hospitality.</p>
+    <a id="booking" class="btn btn-primary btn-lg mt-2">Book Now</a>
+  </div>
+</section>
+
+<section class="white-space">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Hotel</h6>
+          <p>Carefully designed rooms & suites, pool, and premium services.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Restaurant</h6>
+          <p>Dining experiences featuring selected local ingredients.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Events</h6>
+          <p>Marquee for up to 400 guests and equipped conference rooms.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}

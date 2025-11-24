@@ -1,0 +1,24 @@
+:root{
+  --cream:#F5EFE6;
+  --brown:#5A3E2B;
+  --terracotta:#C26A47;
+  --accent:#8A5A44;
+  --dark:#1F1B16;
+}
+
+html, body{ background:var(--cream); color:var(--dark); }
+a{ text-decoration:none; }
+.navbar{ background:rgba(255,255,255,0.85); backdrop-filter:saturate(120%) blur(6px); }
+.btn-primary{ background:var(--terracotta); border-color:var(--terracotta); }
+.btn-outline-dark{ border-color:var(--brown); color:var(--brown); }
+.btn-outline-dark:hover{ background:var(--brown); color:white; }
+.hero{
+  min-height:70vh;
+  display:flex; align-items:center; justify-content:center;
+  background-position:center; background-size:cover;
+}
+.card{ border-radius:1rem; border:0; box-shadow:0 8px 20px rgba(0,0,0,0.08); }
+.footer{ background:#fff; border-top:1px solid rgba(0,0,0,0.06); }
+.badge-brand{ background:var(--accent); }
+.white-space{ padding:3rem 0; }
+.section-title{ letter-spacing:.06em; text-transform:uppercase; color:var(--accent); font-weight:600; }

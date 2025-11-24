@@ -1,0 +1,45 @@
+{% extends 'base.html' %}
+{% block title %} — Eventos{% endblock %}
+{% block content %}
+<div class="container py-5">
+  <h2 class="mb-3">Eventos e Conferências</h2>
+  <p>Tenda até 400 convidados, salas de conferências e serviços incluídos.</p>
+  <div class="card p-4 mt-4">
+    <h5 class="mb-3">Pedir Orçamento</h5>
+    <form method="post">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <label class="form-label">Nome</label>
+          <input class="form-control" name="name" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Email</label>
+          <input type="email" class="form-control" name="email" required>
+        </div>
+        <div class="col-md-6">
+          <label class="form-label">Tipo de evento</label>
+          <select class="form-select" name="type">
+            <option>Conferência</option>
+            <option>Casamento</option>
+            <option>Gala</option>
+            <option>Outro</option>
+          </select>
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Nº de convidados</label>
+          <input type="number" class="form-control" name="guests" min="1">
+        </div>
+        <div class="col-md-3">
+          <label class="form-label">Data pretendida</label>
+          <input type="date" class="form-control" name="date">
+        </div>
+        <div class="col-12">
+          <label class="form-label">Detalhes</label>
+          <textarea class="form-control" rows="4" name="details"></textarea>
+        </div>
+      </div>
+      <button class="btn btn-primary mt-3">Enviar pedido</button>
+    </form>
+  </div>
+</div>
+{% endblock %}

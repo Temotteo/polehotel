@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+{% block title %} — Website Oficial{% endblock %}
+{% block content %}
+<section class="hero" style="background-image:url('{{ url_for('static', filename='img/hero.jpg') }}');">
+  <div class="container text-center text-white">
+    <h1 class="display-5 fw-bold">Pole Hotel</h1>
+    <p class="lead">Elegância minimalista. Hospitalidade autêntica.</p>
+    <a id="booking" class="btn btn-primary btn-lg mt-2">Reservar Agora</a>
+  </div>
+</section>
+
+<section class="white-space">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Hotel</h6>
+          <p>Quartos e suites cuidadosamente desenhados, piscina e serviços premium.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Restaurante</h6>
+          <p>Experiências gastronómicas com ingredientes locais selecionados.</p>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="card p-4 h-100">
+          <h6 class="section-title">Eventos</h6>
+          <p>Tenda para até 400 convidados e salas de conferência equipadas.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
