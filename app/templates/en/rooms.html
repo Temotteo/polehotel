@@ -1,18 +1,39 @@
 {% extends 'base.html' %}
 {% block title %} — Rooms{% endblock %}
+
 {% block content %}
 <div class="container py-5">
   <h2 class="mb-4">Rooms & Suites</h2>
-  <p>Categories list with description, gallery and booking CTA.</p>
+  <p class="mb-5">
+    Pole Hotel offers a range of room and suite categories,
+    designed to combine comfort, elegance and functionality.
+  </p>
+
   <div class="row g-4">
-    {% for i in range(1,4) %}
-    <div class="col-md-4">
+    {% set rooms = [
+      {'name':'Standard Room','img':'room1.jpg','desc':'Essential comfort with elegant design.'},
+      {'name':'Superior Room','img':'room2.jpg','desc':'Extra space and enhanced comfort.'},
+      {'name':'Deluxe Room','img':'room3.jpg','desc':'Sophisticated design and premium views.'},
+      {'name':'Junior Suite','img':'room4.jpg','desc':'Spacious layout with seating area.'},
+      {'name':'Executive Suite','img':'room5.jpg','desc':'Perfect for business stays.'},
+      {'name':'Family Room','img':'room6.jpg','desc':'Ideal for families and small groups.'},
+      {'name':'Presidential Suite','img':'room7.jpg','desc':'Exclusive and premium experience.'}
+    ] %}
+
+    {% for room in rooms %}
+    <div class="col-md-6 col-lg-4">
       <div class="card h-100">
-        <img src="{{ url_for('static', filename='img/rooms/room'+i|string+'.jpg') }}" class="card-img-top" alt="Room {{ i }}">
-        <div class="card-body">
-          <h5 class="card-title">Category {{ i }}</h5>
-          <p class="card-text">Short description for room category {{ i }}.</p>
-          <a class="btn btn-primary">Book</a>
+        <img 
+          src="{{ url_for('static', filename='img/rooms/' ~ room.img) }}"
+          class="card-img-top"
+          alt="{{ room.name }}"
+        >
+        <div class="card-body d-flex flex-column">
+          <h5 class="card-title">{{ room.name }}</h5>
+          <p class="card-text flex-grow-1">{{ room.desc }}</p>
+          <a href="#booking" class="btn btn-primary mt-auto">
+            Book Now
+          </a>
         </div>
       </div>
     </div>
