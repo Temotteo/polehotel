@@ -22,3 +22,8 @@ a{ text-decoration:none; }
 .badge-brand{ background:var(--accent); }
 .white-space{ padding:3rem 0; }
 .section-title{ letter-spacing:.06em; text-transform:uppercase; color:var(--accent); font-weight:600; }
+
+.carousel img {
+  max-height: 520px;
+  object-fit: cover;
+}
