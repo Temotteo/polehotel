@@ -12,6 +12,17 @@ def tpath(page):
 @bp.route('/<lang>/rooms/<slug>')
 def room_detail(lang, slug):
 
+    SLUG_ALIAS = {
+        "economy-double": "casal-economico",
+        "standard-double": "casal-standard",
+        "standard-twin": "duplo-standard",
+        "executive-special": "executivo-especial",
+        "executive-junior": "executivo-junior",
+        "executive-master": "executivo-master",
+    }
+
+    slug = SLUG_ALIAS.get(slug, slug)
+
     rooms = {
         "casal-economico": {
             "pt": {
