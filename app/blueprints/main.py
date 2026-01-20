@@ -50,7 +50,8 @@ def room_detail(lang, slug):
             "en": {
                 "name": "Standard Double",
                 "desc": "Balanced comfort with a welcoming design.",
-                "features": ["Double bed", "TV", "Wi-Fi", "Air conditioning"]
+                "features": ["Double bed", "TV", "Wi-Fi", "Air conditioning"],
+                "gallery": ["4.jpg", "5.jpg", "6.jpg"]
             },
             "img": "room2.jpg"
         },
@@ -59,12 +60,14 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Duplo Standard",
                 "desc": "Ideal para duas pessoas, com espaço e comodidade.",
-                "features": ["Duas camas", "TV", "Wi-Fi", "Ar condicionado"]
+                "features": ["Duas camas", "TV", "Wi-Fi", "Ar condicionado"],
+                "gallery": ["7.jpg", "8.jpg", "9.jpg"]
             },
             "en": {
                 "name": "Standard Twin",
                 "desc": "Ideal for two guests with space and comfort.",
-                "features": ["Twin beds", "TV", "Wi-Fi", "Air conditioning"]
+                "features": ["Twin beds", "TV", "Wi-Fi", "Air conditioning"],
+                "gallery": ["7.jpg", "8.jpg", "9.jpg"]
             },
             "img": "room3.jpg"
         },
