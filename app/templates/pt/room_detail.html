@@ -4,8 +4,12 @@
 {% block content %}
 
 <!-- HERO -->
+{% set hero_img = room.gallery[0] if room.gallery else None %}
+
 <section class="hero" style="
-  background-image:url('{{ url_for('static', filename='img/rooms/' ~ folder ~ '/1.jpg') }}');
+  {% if hero_img %}
+    background-image:url('{{ url_for('static', filename='img/rooms/' ~ folder ~ '/' ~ hero_img) }}');
+  {% endif %}
   background-size: cover;
   background-position: center;
   height: 60vh;
