@@ -28,12 +28,14 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Casal Económico",
                 "desc": "Opção funcional e confortável para estadias práticas.",
-                "features": ["Cama de casal", "Ar condicionado", "Wi-Fi", "Casa de banho privativa"]
+                "features": ["Cama de casal", "Ar condicionado", "Wi-Fi", "Casa de banho privativa"],
+                "gallery": ["1.jpg", "2.jpg", "3.jpg"]
             },
             "en": {
                 "name": "Economy Double",
                 "desc": "Functional and comfortable option for practical stays.",
-                "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"]
+                "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"],
+                "gallery": ["1.jpg", "2.jpg", "3.jpg"]
             },
             "img": "room1.jpg"
         },
