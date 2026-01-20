@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %} — {{ room.name }}{% endblock %}
+
+{% block content %}
+<section class="hero" style="background-image:url('{{ url_for('static', filename='img/rooms/' ~ img) }}');">
+  <div class="container text-white text-center">
+    <h1 class="display-6 fw-bold">{{ room.name }}</h1>
+  </div>
+</section>
+
+<div class="container py-5">
+  <p class="lead mb-4">{{ room.desc }}</p>
+
+  <h5 class="mb-3">Amenities</h5>
+  <ul class="list-unstyled row">
+    {% for f in room.features %}
+      <li class="col-md-6 mb-2">✔ {{ f }}</li>
+    {% endfor %}
+  </ul>
+
+  <a href="#booking" class="btn btn-primary btn-lg mt-4">
+    Book this room
+  </a>
+</div>
+{% endblock %}
