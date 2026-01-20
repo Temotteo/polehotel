@@ -1,5 +1,5 @@
 import os
-from flask import Flask, redirect, request, url_for
+from flask import Flask, request, url_for
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -9,30 +9,34 @@ def create_app():
     app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'dev')
     app.config['DEFAULT_LANG'] = os.getenv('DEFAULT_LANG', 'pt')
 
-    # Blueprints
+    # 🔹 Register blueprints
     from .blueprints.main import bp as main_bp
     app.register_blueprint(main_bp)
 
-    # Simple language switch via query param ?lang=pt|en
+    # 🔹 Detect language
     @app.before_request
     def detect_lang():
-        lang = request.args.get('lang')
+        lang = request.view_args.get('lang') if request.view_args else None
         if lang in ('pt', 'en'):
             request.lang = lang
         else:
             request.lang = app.config['DEFAULT_LANG']
 
-    # Helper to reverse with lang
+    # 🔹 Inject helpers into Jinja (THIS WAS MISSING / WRONG)
+    @app.context_processor
     def inject_globals():
         def with_lang(endpoint, **values):
-            # copia os argumentos atuais da rota (ex: slug)
             args = {}
+
+            # preserve current route params (slug, etc.)
             if request.view_args:
                 args.update(request.view_args)
 
-            # força idioma
+            # override / force language
             args['lang'] = values.get('lang', args.get('lang'))
 
             return url_for(endpoint, **args)
+
         return dict(with_lang=with_lang)
+
     return app
