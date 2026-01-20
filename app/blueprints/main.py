@@ -37,7 +37,7 @@ def room_detail(lang, slug):
                 "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"],
                 "gallery": ["1.jpg", "2.jpg", "3.jpg"]
             },
-            "img": "1.jpg"
+            "img": "room1.jpg"
         },
 
         "casal-standard": {
