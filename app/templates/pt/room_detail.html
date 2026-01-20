@@ -3,54 +3,74 @@
 
 {% block content %}
 
-
-
-
-<section class="hero" style="background-image:url('{{ url_for('static', filename='img/rooms/' ~ img) }}');">
-  <div class="container text-white text-center">
-    <h1 class="display-6 fw-bold">{{ room.name }}</h1>
+<!-- HERO -->
+<section class="hero" style="
+  background-image:url('{{ url_for('static', filename='img/rooms/' ~ folder ~ '/1.jpg') }}');
+  background-size: cover;
+  background-position: center;
+  height: 60vh;
+">
+  <div class="container h-100 d-flex align-items-center justify-content-center">
+    <h1 class="display-5 fw-bold text-white text-shadow">
+      {{ room.name }}
+    </h1>
   </div>
 </section>
 
-<div class="container py-5">
-  <p class="lead mb-4">{{ room.desc }}</p>
+<!-- GALERIA SLIDER -->
+{% if room.gallery %}
+<section class="room-gallery py-5 bg-white">
+  <div class="container">
 
-  <!-- ✅ AQUI entra o IF -->
-  {% if room.gallery %}
-  <div id="roomGallery" class="carousel slide mb-5" data-bs-ride="carousel">
+    <div id="roomGallery" class="carousel slide" data-bs-ride="carousel">
+      <div class="carousel-inner rounded-4 shadow overflow-hidden">
 
-    <div class="carousel-inner rounded-4 overflow-hidden">
-      {% for img in room.gallery %}
-      <div class="carousel-item {% if loop.first %}active{% endif %}">
-        <img
-          src="{{ url_for('static', filename='img/rooms/' ~ folder ~ '/' ~ img) }}"
-          class="d-block w-100"
-          alt="{{ room.name }}"
-        >
+        {% for img in room.gallery %}
+        <div class="carousel-item {% if loop.first %}active{% endif %}">
+          <img
+            src="{{ url_for('static', filename='img/rooms/' ~ folder ~ '/' ~ img) }}"
+            class="d-block w-100"
+            alt="{{ room.name }}"
+            style="height:420px; object-fit:cover;"
+          >
+        </div>
+        {% endfor %}
+
       </div>
-      {% endfor %}
+
+      <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery" data-bs-slide="prev">
+        <span class="carousel-control-prev-icon bg-dark rounded-circle p-3"></span>
+      </button>
+
+      <button class="carousel-control-next" type="button" data-bs-target="#roomGallery" data-bs-slide="next">
+        <span class="carousel-control-next-icon bg-dark rounded-circle p-3"></span>
+      </button>
     </div>
 
-    <button class="carousel-control-prev" type="button" data-bs-target="#roomGallery" data-bs-slide="prev">
-      <span class="carousel-control-prev-icon"></span>
-    </button>
-
-    <button class="carousel-control-next" type="button" data-bs-target="#roomGallery" data-bs-slide="next">
-      <span class="carousel-control-next-icon"></span>
-    </button>
   </div>
-  {% endif %}
-  <!-- ✅ FIM do IF -->
+</section>
+{% endif %}
 
-  <h5 class="mb-3">Comodidades</h5>
-  <ul class="list-unstyled row">
-    {% for f in room.features %}
-      <li class="col-md-6 mb-2">✔ {{ f }}</li>
-    {% endfor %}
-  </ul>
+<!-- INFO -->
+<section class="room-info py-5" style="background:#f7f3ea;">
+  <div class="container">
 
-  <a href="#booking" class="btn btn-primary btn-lg mt-4">
-    Reservar Agora
-  </a>
-</div>
+    <p class="lead mb-4">
+      {{ room.desc }}
+    </p>
+
+    <h5 class="mb-3">Comodidades</h5>
+    <ul class="list-unstyled row">
+      {% for f in room.features %}
+        <li class="col-md-6 mb-2">✔ {{ f }}</li>
+      {% endfor %}
+    </ul>
+
+    <a href="#booking" class="btn btn-primary btn-lg mt-4">
+      Reservar este quarto
+    </a>
+
+  </div>
+</section>
+
 {% endblock %}
