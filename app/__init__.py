@@ -28,12 +28,16 @@ def create_app():
         def with_lang(endpoint, **values):
             args = {}
 
-            # preserve current route params (slug, etc.)
+            # 1️⃣ args atuais da rota (ex: lang)
             if request.view_args:
                 args.update(request.view_args)
 
-            # override / force language
-            args['lang'] = values.get('lang', args.get('lang'))
+            # 2️⃣ args explícitos passados no template (ex: slug)
+            args.update(values)
+
+            # 3️⃣ garantir que lang existe
+            if 'lang' not in args:
+                args['lang'] = getattr(request, 'lang', 'pt')
 
             return url_for(endpoint, **args)
 
