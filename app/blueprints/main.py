@@ -8,6 +8,108 @@ def tpath(page):
     lang = getattr(request, 'lang', 'pt')
     return f"{lang}/{page}.html"
 
+@bp.route('/<lang>/quartos/<slug>')
+@bp.route('/<lang>/rooms/<slug>')
+def room_detail(lang, slug):
+
+    rooms = {
+        "casal-economico": {
+            "pt": {
+                "name": "Casal Económico",
+                "desc": "Opção funcional e confortável para estadias práticas.",
+                "features": ["Cama de casal", "Ar condicionado", "Wi-Fi", "Casa de banho privativa"]
+            },
+            "en": {
+                "name": "Economy Double",
+                "desc": "Functional and comfortable option for practical stays.",
+                "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"]
+            },
+            "img": "room1.jpg"
+        },
+
+        "casal-standard": {
+            "pt": {
+                "name": "Casal Standard",
+                "desc": "Conforto equilibrado com design acolhedor.",
+                "features": ["Cama de casal", "TV", "Wi-Fi", "Ar condicionado"]
+            },
+            "en": {
+                "name": "Standard Double",
+                "desc": "Balanced comfort with a welcoming design.",
+                "features": ["Double bed", "TV", "Wi-Fi", "Air conditioning"]
+            },
+            "img": "room2.jpg"
+        },
+
+        "duplo-standard": {
+            "pt": {
+                "name": "Duplo Standard",
+                "desc": "Ideal para duas pessoas, com espaço e comodidade.",
+                "features": ["Duas camas", "TV", "Wi-Fi", "Ar condicionado"]
+            },
+            "en": {
+                "name": "Standard Twin",
+                "desc": "Ideal for two guests with space and comfort.",
+                "features": ["Twin beds", "TV", "Wi-Fi", "Air conditioning"]
+            },
+            "img": "room3.jpg"
+        },
+
+        "executivo-especial": {
+            "pt": {
+                "name": "Executivo Especial",
+                "desc": "Categoria superior com detalhes premium.",
+                "features": ["Cama queen", "Mini-bar", "Secretária", "Wi-Fi"]
+            },
+            "en": {
+                "name": "Executive Special",
+                "desc": "Premium category with refined details.",
+                "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"]
+            },
+            "img": "room4.jpg"
+        },
+
+        "executivo-junior": {
+            "pt": {
+                "name": "Executivo Junior",
+                "desc": "Ambiente amplo, ideal para estadias prolongadas.",
+                "features": ["Área de estar", "Cama queen", "Wi-Fi", "Ar condicionado"]
+            },
+            "en": {
+                "name": "Executive Junior",
+                "desc": "Spacious layout, ideal for longer stays.",
+                "features": ["Seating area", "Queen bed", "Wi-Fi", "Air conditioning"]
+            },
+            "img": "room5.jpg"
+        },
+
+        "executivo-master": {
+            "pt": {
+                "name": "Executivo Master",
+                "desc": "Experiência exclusiva com máximo conforto e elegância.",
+                "features": ["Suite premium", "Sala de estar", "Mini-bar", "Vista privilegiada"]
+            },
+            "en": {
+                "name": "Executive Master",
+                "desc": "Exclusive experience with maximum comfort and elegance.",
+                "features": ["Premium suite", "Living area", "Mini-bar", "Premium view"]
+            },
+            "img": "room6.jpg"
+        }
+    }
+
+    room = rooms.get(slug)
+    if not room:
+        abort(404)
+
+    content = room.get(lang, room["pt"])
+    return render_template(
+        f"{lang}/room_detail.html",
+        room=content,
+        img=room["img"]
+    )
+
+
 @bp.route('/')
 def home_redirect():
     # Redirect to default language home

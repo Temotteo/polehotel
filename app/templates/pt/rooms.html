@@ -30,8 +30,11 @@
         <div class="card-body d-flex flex-column">
           <h5 class="card-title">{{ room.name }}</h5>
           <p class="card-text flex-grow-1">{{ room.desc }}</p>
-          <a href="#booking" class="btn btn-primary mt-auto">
-            Reservar Agora
+          <a 
+            href="{{ with_lang('main.room_detail', slug=room.slug) }}" 
+            class="btn btn-primary mt-auto"
+            >
+            Ver Detalhes
           </a>
         </div>
       </div>
