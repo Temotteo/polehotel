@@ -124,9 +124,15 @@ def index(lang):
 def about(lang):
     return render_template(tpath('about'))
 
+#@bp.route('/<lang>/rooms')
+#def rooms(lang):
+#    return render_template(tpath('rooms'))
+
 @bp.route('/<lang>/rooms')
+@bp.route('/<lang>/rooms/')
 def rooms(lang):
     return render_template(tpath('rooms'))
+
 
 @bp.route('/<lang>/dining')
 def dining(lang):
