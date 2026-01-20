@@ -44,7 +44,8 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Casal Standard",
                 "desc": "Conforto equilibrado com design acolhedor.",
-                "features": ["Cama de casal", "TV", "Wi-Fi", "Ar condicionado"]
+                "features": ["Cama de casal", "TV", "Wi-Fi", "Ar condicionado"], 
+                "gallery": ["4.jpg", "5.jpg", "6.jpg"]
             },
             "en": {
                 "name": "Standard Double",
