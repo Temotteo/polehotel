@@ -23,11 +23,16 @@ def create_app():
             request.lang = app.config['DEFAULT_LANG']
 
     # Helper to reverse with lang
-    @app.context_processor
     def inject_globals():
         def with_lang(endpoint, **values):
-            lang = getattr(request, 'lang', app.config['DEFAULT_LANG'])
-            values['lang'] = lang
-            return url_for(endpoint, **values)
+            # copia os argumentos atuais da rota (ex: slug)
+            args = {}
+            if request.view_args:
+                args.update(request.view_args)
+
+            # força idioma
+            args['lang'] = values.get('lang', args.get('lang'))
+
+            return url_for(endpoint, **args)
         return dict(with_lang=with_lang)
     return app
