@@ -12,9 +12,11 @@
 <nav class="navbar navbar-expand-lg sticky-top">
   <div class="container">
     <a class="navbar-brand fw-semibold" href="{{ with_lang('main.index') }}">Pole Hotel</a>
+    
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
       <span class="navbar-toggler-icon"></span>
     </button>
+
     <div id="nav" class="collapse navbar-collapse">
       <ul class="navbar-nav me-auto mb-2 mb-lg-0">
         <li class="nav-item"><a class="nav-link" href="{{ with_lang('main.about') }}">{{ 'Sobre' if lang=='pt' else 'About' }}</a></li>
@@ -30,7 +32,7 @@
         <li class="nav-item"><a class="nav-link" href="{{ with_lang('main.contact') }}">{{ 'Contactos' if lang=='pt' else 'Contact' }}</a></li>
       </ul>
       <div class="d-flex gap-2">
-        <a class="btn btn-primary" href="#booking">{{ 'Reservar Agora' if lang=='pt' else 'Book Now' }}</a>
+        <a class="btn btn-primary" href="{{ with_lang('main.booking') }}">{{ 'Reservar Agora' if lang=='pt' else 'Book Now' }}</a>
         <div class="dropdown">
           <button class="btn btn-outline-dark dropdown-toggle" data-bs-toggle="dropdown">{{ 'PT' if lang=='pt' else 'EN' }}</button>
           <ul class="dropdown-menu dropdown-menu-end">

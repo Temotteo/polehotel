@@ -1,0 +1,130 @@
+{% extends 'base.html' %}
+{% block title %} — Booking{% endblock %}
+
+{% block content %}
+
+<!-- HERO -->
+<section class="hero"
+  style="
+    background:#3f352b;
+    height:50vh;
+  ">
+  <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+    <div>
+      <h1 class="display-5 fw-bold text-white mb-3">
+        Booking
+      </h1>
+      <p class="lead text-light">
+        Book your stay at Pole Hotel
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- BOOKING CONTENT -->
+<section class="py-5" style="background:#f7f3ea;">
+  <div class="container">
+
+    <div class="row g-5">
+
+      <!-- FORM -->
+      <div class="col-lg-7">
+        <h2 class="mb-4">Booking Request</h2>
+
+        <form method="post" action="#">
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Check-in</label>
+              <input type="date" class="form-control" required>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Check-out</label>
+              <input type="date" class="form-control" required>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Adults</label>
+              <select class="form-select">
+                {% for i in range(1,5) %}
+                <option>{{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Children</label>
+              <select class="form-select">
+                {% for i in range(0,4) %}
+                <option>{{ i }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Room Type</label>
+            <select class="form-select">
+              <option>Economy Double Room</option>
+              <option>Standard Double Room</option>
+              <option>Standard Twin Room</option>
+              <option>Executive Room</option>
+              <option>Special Executive Room</option>
+            </select>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Full Name</label>
+            <input type="text" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Phone / WhatsApp</label>
+            <input type="text" class="form-control">
+          </div>
+
+          <div class="mb-4">
+            <label class="form-label">Notes</label>
+            <textarea class="form-control" rows="3"></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-lg">
+            Send Booking Request
+          </button>
+
+        </form>
+      </div>
+
+      <!-- INFO -->
+      <div class="col-lg-5">
+        <h3 class="mb-4">Other Booking Options</h3>
+
+        <p>
+          You can also book your stay through the following platforms:
+        </p>
+
+        <ul class="list-unstyled">
+          <li class="mb-2">✔ Booking.com</li>
+          <li class="mb-2">✔ Airbnb</li>
+          <li class="mb-2">✔ Direct contact via WhatsApp</li>
+        </ul>
+
+        <a href="{{ with_lang('main.contact') }}"
+           class="btn btn-outline-primary mt-3">
+          Contact us
+        </a>
+
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+{% endblock %}
