@@ -172,3 +172,8 @@ def location(lang):
 def contact(lang):
     # TODO: handle contact form submission (email/WhatsApp)
     return render_template(tpath('contact'))
+
+
+@bp.route('/<lang>/private-lounge')
+def private_lounge(lang):
+    return render_template(tpath('private_lounge'))
