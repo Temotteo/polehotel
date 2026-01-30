@@ -1,8 +1,152 @@
 {% extends 'base.html' %}
-{% block title %} — Sobre{% endblock %}
+{% block title %} — Sobre Nós{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4">Sobre o Pole Hotel</h2>
-  <p>História, conceito e identidade do hotel. Experiência de hospitalidade em cada detalhe.</p>
-</div>
+
+<!-- HERO -->
+<section class="hero"
+  style="
+    background-image:url('{{ url_for('static', filename='img/hero.jpg') }}');
+    background-size:cover;
+    background-position:center;
+    height:50vh;
+  ">
+  <div class="container h-100 d-flex align-items-center justify-content-center">
+    <h1 class="display-5 fw-bold text-white text-shadow">
+      Sobre o Pole Hotel
+    </h1>
+  </div>
+</section>
+
+<!-- CONTENT -->
+<section class="py-5" style="background:#f7f3ea;">
+  <div class="container">
+
+    <!-- Quem Somos -->
+    <h2 class="mb-4">Quem Somos</h2>
+    <p class="lead">
+      O <strong>Pole Hotel</strong> é uma unidade hoteleira orientada para a prestação de
+      <strong>serviços integrados de hotelaria, eventos, restauração e catering</strong>,
+      pautada por elevados padrões de qualidade, profissionalismo e atenção ao detalhe.
+    </p>
+
+    <p>
+      Localizado estrategicamente no centro da <strong>Vila-Sede de Marracuene</strong>,
+      na Avenida Cardeal Dom Alexandre dos Santos, S/N, Bairro do Cajual (Circular de Maputo),
+      o Pole Hotel oferece fácil acesso e comodidade para clientes nacionais e internacionais.
+    </p>
+
+    <p>
+      A unidade pertence à <strong>JUSA Investimentos, Lda.</strong>, sociedade por quotas
+      legalmente constituída ao abrigo da legislação moçambicana, publicada no
+      Boletim da República, III Série, nº 87, de 30 de outubro de 2014.
+    </p>
+
+    <p>
+      Dispomos de uma infraestrutura moderna, funcional e versátil, concebida para responder
+      às necessidades de empresas, instituições públicas e privadas e clientes particulares,
+      assegurando conforto, eficiência operacional e qualidade de serviço.
+    </p>
+
+    <!-- Valores -->
+    <h3 class="mt-5 mb-3">Valores</h3>
+    <ul class="list-unstyled row">
+      <li class="col-md-6 mb-2">✔ Qualidade e excelência no serviço</li>
+      <li class="col-md-6 mb-2">✔ Integridade e ética profissional</li>
+      <li class="col-md-6 mb-2">✔ Responsabilidade e compromisso</li>
+      <li class="col-md-6 mb-2">✔ Profissionalismo e respeito pelo cliente</li>
+    </ul>
+
+    <p>
+      Valorizamos o desenvolvimento contínuo dos nossos colaboradores, o trabalho em equipa
+      e a melhoria permanente dos nossos serviços, promovendo relações transparentes,
+      duradouras e de confiança com parceiros e instituições.
+    </p>
+
+    <!-- Missão -->
+    <h3 class="mt-5 mb-3">Missão</h3>
+    <p>
+      A missão do Pole Hotel é oferecer <strong>soluções integradas de hotelaria, restauração,
+      eventos e catering</strong>, proporcionando experiências confortáveis, eficientes
+      e personalizadas.
+    </p>
+
+    <p>
+      Os nossos serviços incluem alojamento hoteleiro, organização de seminários e conferências,
+      retiros de negócios e lazer, serviços de catering e buffets com capacidade superior a
+      300 refeições, bem como a realização de eventos dentro e fora das nossas instalações,
+      serviços de transferes, aluguer de viaturas e outros serviços complementares.
+    </p>
+
+    <!-- Serviços -->
+    <h3 class="mt-5 mb-4">Serviços</h3>
+
+    <h5>Alojamento (29 quartos)</h5>
+    <p>
+      O Pole Hotel dispõe de 29 quartos confortáveis e totalmente equipados, distribuídos
+      pelas seguintes categorias:
+    </p>
+    <ul>
+      <li>Quarto Duplo Standard</li>
+      <li>Quarto Casal Standard</li>
+      <li>Quarto Casal Económico</li>
+      <li>Quarto Executivo</li>
+      <li>Quarto Executivo Especial</li>
+    </ul>
+    <p>
+      As tarifas incluem pequeno-almoço completo, com opções variadas, desde frutas frescas
+      a pratos quentes. Todos os quartos dispõem de acesso gratuito à internet Wi-Fi,
+      estando disponíveis serviços adicionais mediante solicitação, como lavandaria.
+    </p>
+
+    <h5 class="mt-4">Salas de Conferências</h5>
+    <ul>
+      <li><strong>Sala Executiva</strong> – capacidade até 12 pessoas</li>
+      <li><strong>Sala de Formação/Reuniões</strong> – capacidade até 35 pessoas</li>
+    </ul>
+
+    <h5 class="mt-4">Tenda de Eventos</h5>
+    <p>
+      Dispomos de uma tenda de eventos com capacidade até 350 pessoas, ideal para conferências,
+      cerimónias, lançamentos, eventos corporativos e sociais.
+    </p>
+    <p>
+      Disponibilizamos pacotes completos, incluindo decoração, mesas, cadeiras, louça,
+      sistema de som, DJ, técnico de som, equipa de garçons e acompanhamento por uma
+      gestora de eventos dedicada.
+    </p>
+
+    <h5 class="mt-4">Restaurante</h5>
+    <p>
+      O nosso restaurante está disponível para hóspedes e clientes externos, oferecendo
+      refeições de qualidade num ambiente acolhedor, com elevados padrões de apresentação
+      e atendimento.
+    </p>
+
+    <h5 class="mt-4">Catering</h5>
+    <p>
+      Prestamos serviços de catering personalizados para eventos corporativos e não corporativos,
+      adaptados às necessidades específicas de cada cliente.
+    </p>
+
+    <!-- Porque escolher -->
+    <h3 class="mt-5 mb-3">Porquê escolher o Pole Hotel?</h3>
+    <p>
+      O Pole Hotel distingue-se pela sua abordagem integrada, que combina hotelaria,
+      restauração, eventos e serviços complementares num único espaço.
+    </p>
+    <p>
+      Esta abordagem permite aos nossos clientes maior eficiência operacional,
+      redução de custos, qualidade consistente e um único parceiro para múltiplas necessidades.
+    </p>
+
+    <p class="mt-4">
+      Colocamo-nos à inteira disposição para a realização de reuniões de apresentação
+      ou para a elaboração de propostas personalizadas, de acordo com as necessidades
+      da sua instituição.
+    </p>
+
+  </div>
+</section>
+
 {% endblock %}
