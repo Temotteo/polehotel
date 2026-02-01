@@ -1,14 +1,55 @@
 {% extends 'base.html' %}
 {% block title %} — Galeria{% endblock %}
+
 {% block content %}
-<div class="container py-5">
-  <h2 class="mb-4">Galeria Fotográfica</h2>
-  <div class="row g-3">
-    {% for i in range(1,9) %}
-    <div class="col-6 col-md-3">
-      <img src="{{ url_for('static', filename='img/gallery/pic'+i|string+'.jpg') }}" class="img-fluid rounded-4" alt="Foto {{ i }}">
+
+<!-- HERO -->
+<section class="hero"
+  style="background:#3f352b; height:50vh;">
+  <div class="container h-100 d-flex align-items-center justify-content-center">
+    <h1 class="display-5 fw-bold text-white">
+      Galeria
+    </h1>
+  </div>
+</section>
+
+<section class="py-5" style="background:#f7f3ea;">
+  <div class="container">
+
+    {% set categories = [
+      {'name':'Área Externa', 'slug':'area-externa'},
+      {'name':'Decoração dos Quartos', 'slug':'decoracao-dos-quartos'},
+      {'name':'Drinks · Lounge · Bar', 'slug':'drinks-lounge-bar'},
+      {'name':'Ginásio', 'slug':'gym'},
+      {'name':'Pratos · Restaurante', 'slug':'pratos-restaurante'},
+      {'name':'Quartos', 'slug':'quartos'},
+      {'name':'Receção', 'slug':'recepcao'},
+      {'name':'Sala de Reuniões', 'slug':'sala-de-reunioes'},
+      {'name':'Tenda de Eventos', 'slug':'tenda'}
+    ] %}
+
+    {% for cat in categories %}
+    <div class="mb-5">
+
+      <h3 class="mb-4">{{ cat.name }}</h3>
+
+      <div class="row g-4">
+        {% for i in range(1,7) %}
+        <div class="col-md-4">
+          <img
+            src="{{ url_for('static', filename='img/gallery/' ~ cat.slug ~ '/' ~ i ~ '.jpg') }}"
+            class="img-fluid rounded-4 shadow-sm"
+            alt="{{ cat.name }}"
+            loading="lazy"
+          >
+        </div>
+        {% endfor %}
+      </div>
+
     </div>
     {% endfor %}
+
   </div>
-</div>
+</section>
+
 {% endblock %}

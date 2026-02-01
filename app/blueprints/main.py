@@ -180,3 +180,7 @@ def private_lounge(lang):
 @bp.route('/<lang>/booking', methods=['GET','POST'])
 def booking(lang):
     return render_template(tpath('booking'))
+
+@bp.route('/<lang>/gallery')
+def gallery(lang):
+    return render_template(tpath('gallery'))
