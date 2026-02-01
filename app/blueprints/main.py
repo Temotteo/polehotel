@@ -160,9 +160,9 @@ def events(lang):
     # TODO: handle budget request form submission (email/db)
     return render_template(tpath('events'))
 
-@bp.route('/<lang>/gallery')
-def gallery(lang):
-    return render_template(tpath('gallery'))
+#@bp.route('/<lang>/gallery')
+#def gallery(lang):
+#    return render_template(tpath('gallery'))
 
 @bp.route('/<lang>/location')
 def location(lang):
