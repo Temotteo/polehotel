@@ -6,6 +6,7 @@
   --dark:#1F1B16;
 }
 
+
 html, body{ background:var(--cream); color:var(--dark); }
 a{ text-decoration:none; }
 .navbar{ background:rgba(255,255,255,0.85); backdrop-filter:saturate(120%) blur(6px); }
