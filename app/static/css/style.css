@@ -21,7 +21,7 @@
   height: 90%; /* altura do overlay: cobre 90% da seção */
   background: linear-gradient(
     to top, /* direção do degradê: começa embaixo e vai subindo */
-    rgba(0, 0, 0, 0.7) 0%,   /* opacidade 70% na base (parte mais escura) */
+    rgba(0, 0, 0, 0.8) 0%,   /* opacidade 70% na base (parte mais escura) */
     rgba(0, 0, 0, 0.4) 40%,  /* vai clareando para 40% opacidade aos 40% da altura */
     rgba(0, 0, 0, 0.3) 60%,  /* mais suave aos 60% da altura (30% opacidade) */
     rgba(0, 0, 0, 0) 100%     /* totalmente transparente no topo */
