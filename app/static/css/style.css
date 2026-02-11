@@ -6,6 +6,35 @@
   --dark:#1F1B16;
 }
 
+.hero {
+  position: relative; /* necessário para o ::before se posicionar relativamente à hero */
+  background-size: cover; /* faz a imagem de fundo cobrir toda a área da seção */
+  background-position: center; /* centraliza a imagem no espaço da seção */
+}
+
+.hero::before {
+  content: ""; /* cria o overlay sem adicionar conteúdo real */
+  position: absolute; /* permite posicionar o overlay sobre a imagem */
+  bottom: 0; /* começa a partir da parte inferior da seção */
+  left: 0; /* alinhado à esquerda */
+  width: 100%; /* ocupa toda a largura da seção */
+  height: 90%; /* altura do overlay: cobre 90% da seção */
+  background: linear-gradient(
+    to top, /* direção do degradê: começa embaixo e vai subindo */
+    rgba(0, 0, 0, 0.7) 0%,   /* opacidade 70% na base (parte mais escura) */
+    rgba(0, 0, 0, 0.4) 40%,  /* vai clareando para 40% opacidade aos 40% da altura */
+    rgba(0, 0, 0, 0.3) 60%,  /* mais suave aos 60% da altura (30% opacidade) */
+    rgba(0, 0, 0, 0) 100%     /* totalmente transparente no topo */
+  );
+  z-index: 1; /* coloca atrás do conteúdo da seção (texto e botão) */
+}
+
+.hero .container {
+  position: relative; /* permite que o texto e botões fiquem acima do overlay */
+  z-index: 2; /* garante que o conteúdo fique sobre o ::before */
+}
+
+
 
 html, body{ background:var(--cream); color:var(--dark); }
 a{ text-decoration:none; }
