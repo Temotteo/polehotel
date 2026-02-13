@@ -1,8 +1,28 @@
 {% extends 'base.html' %}
 {% block title %} — Dining{% endblock %}
+
 {% block content %}
+
+<!-- HERO -->
+<section class="hero"
+  style="
+    background-image: url('{{ url_for('static', filename='img/restaurante.jpg') }}');
+    background-size: cover;
+    background-position: center;
+    height:60vh;
+  ">
+  <div class="container h-100 d-flex align-items-center justify-content-center text-center">
+    <div>
+      <h1 class="display-4 fw-bold text-white mb-3">
+        Restaurant & Bar
+      </h1>
+    </div>
+  </div>
+</section>
+
 <div class="container py-5">
-  <h2 class="mb-4">Restaurant & Bar</h2>
+   <!-- <h2 class="mb-4">Restaurant & Bar</h2> -->  <!-- codigo original comentado -->
   <p>Menus (drinks, wine, dining), opening hours and photos.</p>
 </div>
+
 {% endblock %}
