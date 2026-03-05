@@ -6,6 +6,15 @@
   <p>Tenda até 400 convidados, salas de conferências e serviços incluídos.</p>
   <div class="card p-4 mt-4">
     <h5 class="mb-3">Pedir Orçamento</h5>
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div class="alert alert-success mb-3">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
     <form method="post">
       <div class="row g-3">
         <div class="col-md-6">

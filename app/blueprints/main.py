@@ -1,4 +1,21 @@
-from flask import Blueprint, render_template, request, abort
+from flask import Blueprint, render_template, request, abort, flash, redirect
+import smtplib
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+
+
+# ===============================
+# CONFIGURAÇÃO DE EMAIL (GMAIL)
+# ===============================
+
+EMAIL_REMETENTE = "noreplythisemail100@gmail.com"
+EMAIL_SENHA = "cpjxewnfvescnghy"
+EMAIL_DESTINO = "amilcarfernandes1967@gmail.com"
+EMAIL_DESTINOS = ["amilcarfernandes1967@gmail.com", "dmicasmouse01@gmail.com"]
+
+
+
+
 
 bp = Blueprint('main', __name__)
 
@@ -157,7 +174,67 @@ def dining(lang):
 
 @bp.route('/<lang>/events', methods=['GET','POST'])
 def events(lang):
-    # TODO: handle budget request form submission (email/db)
+
+    if request.method == "POST":
+
+        nome = request.form.get("name")
+        email = request.form.get("email")
+        tipo = request.form.get("type")
+        convidados = request.form.get("guests")
+        data = request.form.get("date")
+        detalhes = request.form.get("details")
+
+        try:
+            corpo_html = f"""
+            <html>
+            <body>
+		<p style="margin:0;"><b>POLY HOTEL</b></p>
+                <p style="margin:0;"><b>Novo pedido de orçamento - Eventos</b></p>
+                <br>
+                <p style="margin:0;"><b>Nome:</b> {nome}</p>
+                <p style="margin:0;"><b>Email:</b> {email}</p>
+                <p style="margin:0;"><b>Tipo de evento:</b> {tipo}</p>
+                <p style="margin:0;"><b>Nº de convidados:</b> {convidados}</p>
+                <p style="margin:0;"><b>Data pretendida:</b> {data}</p>
+                <p style="margin:0;"><b>Detalhes:</b><br>{detalhes}</p>
+            </body>
+            </html>
+            """
+
+            msg = MIMEMultipart()
+            msg["From"] = EMAIL_REMETENTE
+
+            if isinstance(EMAIL_DESTINOS, list):
+                msg["To"] = ", ".join(EMAIL_DESTINOS)
+            else:
+                msg["To"] = EMAIL_DESTINO
+
+            msg["Subject"] = "Poly Hotel - Novo pedido de orçamento (Eventos) "
+            msg.attach(MIMEText(corpo_html, "html"))
+
+            servidor = smtplib.SMTP("smtp.gmail.com", 587)
+            servidor.starttls()
+            servidor.login(EMAIL_REMETENTE, EMAIL_SENHA)
+            servidor.send_message(msg)
+            servidor.quit()
+
+            if lang == "en":
+                flash("Request sent successfully!")
+            else:
+                flash("Pedido enviado com sucesso!")
+
+            return redirect(request.url)
+
+        except Exception as e:
+            print("Erro ao enviar email:", e)
+
+            if lang == "en":
+                flash("Error sending request. Please try again.")
+            else:
+                flash("Erro ao enviar pedido. Tente novamente.")
+
+            return redirect(request.url)
+
     return render_template(tpath('events'))
 
 #@bp.route('/<lang>/gallery')
@@ -170,7 +247,60 @@ def location(lang):
 
 @bp.route('/<lang>/contact', methods=['GET','POST'])
 def contact(lang):
-    # TODO: handle contact form submission (email/WhatsApp)
+
+    if request.method == "POST":
+
+        nome = request.form.get("name")
+        email = request.form.get("email")
+        mensagem = request.form.get("message")
+
+        try:
+            corpo_html = f"""
+            <html>
+            <body>
+ 		<p style="margin:0;"><b>POLY HOTEL</b></p>
+                <p style="margin:0;"><b>Nova mensagem de contacto recebida do site PolyHotel:</b></p>
+                <p style="margin:0;"><b>Nome:</b> {nome}</p>
+                <p style="margin:0;"><b>Email:</b> {email}</p>
+                <p style="margin:0;"><b>Mensagem:</b><br>{mensagem}</p>
+            </body>
+            </html>
+            """
+
+            msg = MIMEMultipart()
+            msg["From"] = EMAIL_REMETENTE
+
+            if isinstance(EMAIL_DESTINOS, list):
+                msg["To"] = ", ".join(EMAIL_DESTINOS)
+            else:
+                msg["To"] = EMAIL_DESTINO
+
+            msg["Subject"] = "Poly Hotel - Nova mensagem de contacto"
+            msg.attach(MIMEText(corpo_html, "html"))
+
+            servidor = smtplib.SMTP("smtp.gmail.com", 587)
+            servidor.starttls()
+            servidor.login(EMAIL_REMETENTE, EMAIL_SENHA)
+            servidor.send_message(msg)
+            servidor.quit()
+
+            if lang == "en":
+                flash("Message sent successfully!")
+            else:
+                flash("Mensagem enviada com sucesso!")
+
+            return redirect(request.url)
+
+        except Exception as e:
+            print("Erro ao enviar email:", e)
+
+            if lang == "en":
+                flash("Error sending message. Please try again.")
+            else:
+                flash("Erro ao enviar mensagem. Tente novamente.")
+
+            return redirect(request.url)
+
     return render_template(tpath('contact'))
 
 @bp.route('/<lang>/private-lounge')

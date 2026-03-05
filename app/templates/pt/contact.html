@@ -5,6 +5,15 @@
   <h2 class="mb-4">Contactos</h2>
   <div class="row g-4">
     <div class="col-md-6">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="color: green; margin-bottom:15px;">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}
+
       <form method="post">
         <div class="mb-3">
           <label class="form-label">Nome</label>
@@ -19,7 +28,7 @@
           <textarea class="form-control" rows="4" name="message" required></textarea>
         </div>
         <button class="btn btn-primary">Enviar</button>
-        <a class="btn btn-outline-dark ms-2" href="https://wa.me/###########" target="_blank">WhatsApp</a>
+        <a class="btn btn-outline-dark ms-2" href="https://wa.me/258869349474" target="_blank">WhatsApp</a>
       </form>
     </div>
     <div class="col-md-6">

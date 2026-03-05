@@ -74,3 +74,79 @@ a{ text-decoration:none; }
   padding: 1.2rem;
 }
 
+-------------------
+
+/* ===== Imagem metade inferior apenas para estes cards ===== */
+
+.white-space .card{
+  overflow: hidden; /* garante que a imagem respeite o border-radius já definido */
+  display: flex; /* permite empurrar a imagem para baixo */
+  flex-direction: column; /* organiza conteúdo em coluna */
+}
+
+.card-img-half{
+  margin-top: auto; /* empurra a imagem para a parte inferior do card */
+  height: 220px; /* altura da metade inferior (valor seguro e estável) */
+  width: 100%; /* ocupa toda a largura */
+  background-size: cover; /* cobre sem distorcer */
+  background-position: center; /* centraliza */
+  border-bottom-left-radius: 1rem; /* mantém borda arredondada */
+  border-bottom-right-radius: 1rem; /* mantém borda arredondada */
+}
+
+/* Caminhos das imagens conforme solicitado */
+.img-hotel{
+  background-image: url('../img/index/hotel.jpg');
+}
+
+.img-restaurante{
+  background-image: url('../img/index/restaurante.jpg');
+}
+
+.img-eventos{
+  background-image: url('../img/index/eventos.jpg');
+}
+
+.white-space .card{
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-content{
+  flex: 1;                 /* ocupa espaço disponível */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* centraliza verticalmente */
+}
+
+/*======================NOTIFICACAO DE SUCESSO OU ERRO DE ENVIO DE EMAIL==============================================*/
+
+/* Notificação em sobreposição no topo central */
+.form-alert{
+  position: fixed; /* fica sobre toda a página */
+  top: 20px; /* distância do topo */
+  left: 50%; /* centraliza horizontalmente */
+  transform: translateX(-50%); /* centralização real */
+  z-index: 9999; /* garante que fique acima de tudo */
+  padding: 12px 20px;
+  border-radius: 8px;
+  color: #fff;
+  font-weight: 500;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  min-width: 260px;
+  text-align: center;
+}
+
+/* cores por tipo */
+.form-alert.success{
+  background: #28a745; /* verde sucesso */
+}
+
+.form-alert.error{
+  background: #dc3545; /* vermelho erro */
+}
+
+.d-none{
+  display: none;
+}

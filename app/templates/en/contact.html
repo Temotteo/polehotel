@@ -5,6 +5,15 @@
   <h2 class="mb-4">Contact</h2>
   <div class="row g-4">
     <div class="col-md-6">
+
+{% with messages = get_flashed_messages() %}
+  {% if messages %}
+    <div style="color: green; margin-bottom:15px;">
+      {{ messages[0] }}
+    </div>
+  {% endif %}
+{% endwith %}S
+
       <form method="post">
         <div class="mb-3">
           <label class="form-label">Name</label>
