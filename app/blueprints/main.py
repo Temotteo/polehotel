@@ -3,7 +3,6 @@ import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
 
-
 # ===============================
 # CONFIGURAÇÃO DE EMAIL (GMAIL)
 # ===============================
@@ -12,10 +11,6 @@ EMAIL_REMETENTE = "noreplythisemail100@gmail.com"
 EMAIL_SENHA = "cpjxewnfvescnghy"
 EMAIL_DESTINO = "amilcarfernandes1967@gmail.com"
 EMAIL_DESTINOS = ["amilcarfernandes1967@gmail.com", "dmicasmouse01@gmail.com"]
-
-
-
-
 
 bp = Blueprint('main', __name__)
 
@@ -143,12 +138,60 @@ def room_detail(lang, slug):
         img=room["img"]
     )
 
-
 @bp.route('/')
 def home_redirect():
     # Redirect to default language home
     from flask import current_app, redirect, url_for
     return redirect(url_for('main.index', lang=current_app.config.get('DEFAULT_LANG','pt')))
+
+
+@bp.route('/<lang>/', methods=['GET','POST'])  # ou a rota correta da home
+def home(lang):
+    if request.method == "POST":
+        # Captura do email
+        email = request.form.get("email")
+        
+        # Captura dos interesses (lista)
+        interesses = request.form.getlist("interesse")  # getlist para múltiplos checkbox
+
+        try:
+            # Corpo do email em HTML
+            corpo_html = f"""
+            <html>
+            <body>
+                <p><b>POLE HOTEL - Novo email de Interesse</b><br>
+                <b>Email:</b> {email}<br>
+                <b>Interesses selecionados:</b> {', '.join(interesses) if interesses else 'Nenhum'}</p>
+            </body>
+            </html>
+            """
+
+            msg = MIMEMultipart()
+            msg["From"] = EMAIL_REMETENTE
+            if isinstance(EMAIL_DESTINOS, list):
+                msg["To"] = ", ".join(EMAIL_DESTINOS)
+            else:
+                msg["To"] = EMAIL_DESTINO
+
+            msg["Subject"] = "POLE HOTEL - Novo email de Interesse"
+            msg.attach(MIMEText(corpo_html, "html"))
+
+            # Envio via SMTP
+            servidor = smtplib.SMTP("smtp.gmail.com", 587)
+            servidor.starttls()
+            servidor.login(EMAIL_REMETENTE, EMAIL_SENHA)
+            servidor.send_message(msg)
+            servidor.quit()
+
+            flash("Email de interesse enviado com sucesso!") if lang=="pt" else flash("Interest email sent successfully!")
+            return redirect(request.url)
+
+        except Exception as e:
+            print("Erro ao enviar email de interesse:", e)
+            flash("Erro ao enviar email. Tente novamente.") if lang=="pt" else flash("Error sending email. Please try again.")
+            return redirect(request.url)
+
+    return render_template(f"{lang}/index.html")
 
 @bp.route('/<lang>/')
 def index(lang):

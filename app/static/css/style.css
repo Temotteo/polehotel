@@ -113,6 +113,155 @@ a{ text-decoration:none; }
   flex-direction: column;
 }
 
+
+
+
+.certificacoes{
+  padding:20px 0;
+  text-align:center;
+}
+
+/* LINHA DAS IMAGENS */
+
+.certificacoes-linha{
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:15px; /* CONTROLE DO ESPAÇO ENTRE AS IMAGENS */
+}
+
+/* IMAGENS */
+
+.certificacoes-linha img{
+  height:120px; /* todas mesmo tamanho */
+  width:auto;
+  display:block;
+}
+
+/* MOBILE */
+
+@media (max-width:768px){
+
+  .certificacoes-linha{
+    flex-direction:column;
+    gap:15px;
+  }
+
+  .certificacoes-linha img{
+    height:120px;
+  }
+
+}
+
+
+
+
+.certificacoes-overlay {
+  position: relative; /* muda de absolute para relative */
+  bottom: auto;       /* remove o deslocamento */
+  width: 100%;
+  color: #000;        /* texto preto */
+  font-size: 0.85rem;
+  text-align: center;
+  margin-bottom: 10px; /* opcional: dá um espaçamento da linha de imagens */
+}
+
+/* Overlay da seção de certificações */
+.certificacoes-overlay a {
+  color: #000 !important;      /* força preto */
+  text-decoration: none;        /* remove sublinhado */
+  margin: 0 0.3rem;
+}
+
+.certificacoes-overlay a:hover {
+  color: #000 !important;      /* continua preto no hover */
+  text-decoration: underline;  /* se quiser underline ao passar o mouse */
+}
+
+
+
+
+
+
+
+
+.testemunhos{
+background:#F5EFE6;
+}
+
+.review-card{
+
+background:white;
+max-width:700px;
+margin:auto;
+
+padding:20px;
+
+border-radius:16px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+
+text-align:center;
+}
+
+.stars{
+
+color:#f4b400;
+
+font-size:20px;
+
+margin-bottom:10px;
+}
+
+.review-card p{
+
+font-size:1rem;
+
+line-height:1.6;
+
+margin-bottom:20px;
+}
+
+.review-footer{
+
+display:flex;
+
+justify-content:space-between;
+
+font-size:0.9rem;
+
+color:#666;
+}
+
+.carousel-control-prev-icon,
+.carousel-control-next-icon{
+
+background-color:black;
+
+border-radius:50%;
+padding:10px;
+}
+
+
+
+.newsletter-text {
+  font-weight: 500;          /* Peso da fonte intermediário */
+}
+
+.newsletter-preferences input[type="checkbox"] {
+  margin-right: 0.3rem;      /* Pequeno espaçamento entre checkbox e label */
+}
+
+.newsletter-preferences label {
+  cursor: pointer;           /* Muda cursor ao passar sobre o label */
+}
+
+.newsletter-form .btn-submit:hover {
+  background-color: #a25838; /* Cor do botão ao passar o mouse */
+}
+
+
+
 .card-content{
   flex: 1;                 /* ocupa espaço disponível */
   display: flex;
@@ -150,3 +299,6 @@ a{ text-decoration:none; }
 .d-none{
   display: none;
 }
+
+
+
