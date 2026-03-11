@@ -8,7 +8,7 @@
 
 <section class="hero" style="
   {% if hero_img %}
-    background-image:url('{{ url_for('static', filename='img/rooms/' ~ folder ~ '/' ~ hero_img) }}');
+    background-image:url('{{ url_for('static', filename='img/rooms/' ~ hero_img) }}');
   {% endif %}
   background-size: cover;
   background-position: center;
@@ -32,7 +32,7 @@
         {% for img in room.gallery %}
         <div class="carousel-item {% if loop.first %}active{% endif %}">
           <img
-            src="{{ url_for('static', filename='img/rooms/' ~ folder ~ '/' ~ img) }}"
+            src="{{ url_for('static', filename='img/rooms/' ~ img) }}"
             class="d-block w-100"
             alt="{{ room.name }}"
             style="height:420px; object-fit:cover;"

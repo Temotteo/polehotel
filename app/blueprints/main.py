@@ -88,12 +88,14 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Executivo Especial",
                 "desc": "Categoria superior com detalhes premium.",
-                "features": ["Cama queen", "Mini-bar", "Secretária", "Wi-Fi"]
+                "features": ["Cama queen", "Mini-bar", "Secretária", "Wi-Fi"],
+                "gallery": ["10.jpg", "11.jpg", "12.jpg"]
             },
             "en": {
                 "name": "Executive Special",
                 "desc": "Premium category with refined details.",
-                "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"]
+                "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"],
+                "gallery": ["10.jpg", "11.jpg", "12.jpg"]
             },
             "img": "room4.jpg"
         },
@@ -102,12 +104,14 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Executivo Junior",
                 "desc": "Ambiente amplo, ideal para estadias prolongadas.",
-                "features": ["Área de estar", "Cama queen", "Wi-Fi", "Ar condicionado"]
+                "features": ["Área de estar", "Cama queen", "Wi-Fi", "Ar condicionado"],
+                "gallery": ["13.jpg", "14.jpg", "15.jpg"]
             },
             "en": {
                 "name": "Executive Junior",
                 "desc": "Spacious layout, ideal for longer stays.",
-                "features": ["Seating area", "Queen bed", "Wi-Fi", "Air conditioning"]
+                "features": ["Seating area", "Queen bed", "Wi-Fi", "Air conditioning"],
+                "gallery": ["13.jpg", "14.jpg", "15.jpg"]
             },
             "img": "room5.jpg"
         },
@@ -116,12 +120,14 @@ def room_detail(lang, slug):
             "pt": {
                 "name": "Executivo Master",
                 "desc": "Experiência exclusiva com máximo conforto e elegância.",
-                "features": ["Suite premium", "Sala de estar", "Mini-bar", "Vista privilegiada"]
+                "features": ["Suite premium", "Sala de estar", "Mini-bar", "Vista privilegiada"],
+                "gallery": ["16.jpg", "17.jpg", "18.jpg"]
             },
             "en": {
                 "name": "Executive Master",
                 "desc": "Exclusive experience with maximum comfort and elegance.",
-                "features": ["Premium suite", "Living area", "Mini-bar", "Premium view"]
+                "features": ["Premium suite", "Living area", "Mini-bar", "Premium view"],
+                "gallery": ["16.jpg", "17.jpg", "18.jpg"]
             },
             "img": "room6.jpg"
         }
