@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %} - Gestão de Reservas {% endblock %}
+
+{% block content %}
+<div class="container-fluid py-5">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h3">📅 Gestão de Reservas</h1>
+    </div>
+    <div class="col-md-6 text-end">
+      <a href="{{ url_for('admin.dashboard', lang='pt') }}" class="btn btn-secondary btn-sm">← Voltar</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(category_filter=['success', 'danger']) %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ 'danger' if 'Erro' in message else 'success' }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Filters -->
+  <div class="card mb-4">
+    <div class="card-body">
+      <div class="row">
+        <div class="col-md-6">
+          <input type="text" class="form-control" id="searchInput" placeholder="Pesquisar por nome ou email...">
+        </div>
+        <div class="col-md-6">
+          <select class="form-select" id="statusFilter">
+            <option value="">Todos os estados</option>
+            {% for status in statuses %}
+              <option value="{{ status }}">{{ status_labels.get(status) }}</option>
+            {% endfor %}
+          </select>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Reservations Table -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Lista de Reservas ({{ reservations|length }} total)</h5>
+    </div>
+    <div class="card-body p-0">
+      {% if reservations %}
+        <div class="table-responsive">
+          <table class="table table-hover mb-0">
+            <thead class="table-light">
+              <tr>
+                <th>#ID</th>
+                <th>Hóspede</th>
+                <th>Email</th>
+                <th>Quarto</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Hóspedes</th>
+                <th>Preço</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="reservationsTable">
+              {% for reservation in reservations|reverse %}
+                <tr class="reservation-row" data-name="{{ reservation.guest_name|lower }}" data-email="{{ reservation.email|lower }}" data-status="{{ reservation.status }}">
+                  <td><strong>#{{ reservation.id }}</strong></td>
+                  <td>{{ reservation.guest_name }}</td>
+                  <td><small>{{ reservation.email }}</small></td>
+                  <td>{{ reservation.room_name }}</td>
+                  <td>{{ reservation.check_in }}</td>
+                  <td>{{ reservation.check_out }}</td>
+                  <td>{{ reservation.guests_count }}</td>
+                  <td>€{{ "%.2f"|format(reservation.price) }}</td>
+                  <td>
+                    {% if reservation.status == 'confirmada' %}
+                      <span class="badge bg-success">Confirmada</span>
+                    {% elif reservation.status == 'pendente' %}
+                      <span class="badge bg-warning text-dark">Pendente</span>
+                    {% elif reservation.status == 'cancelada' %}
+                      <span class="badge bg-danger">Cancelada</span>
+                    {% elif reservation.status == 'finalizada' %}
+                      <span class="badge bg-secondary">Finalizada</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.reservation_detail', lang='pt', res_id=reservation.id) }}" class="btn btn-sm btn-info">Ver</a>
+                    <button class="btn btn-sm btn-danger delete-btn" data-id="{{ reservation.id }}">Deletar</button>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="p-4 text-center text-muted">
+          <p>Nenhuma reserva encontrada.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<script>
+// Search functionality
+document.getElementById('searchInput').addEventListener('keyup', (e) => {
+  const search = e.target.value.toLowerCase();
+  const status = document.getElementById('statusFilter').value;
+  
+  document.querySelectorAll('.reservation-row').forEach(row => {
+    const name = row.dataset.name;
+    const email = row.dataset.email;
+    const rowStatus = row.dataset.status;
+    
+    const matchesSearch = name.includes(search) || email.includes(search);
+    const matchesStatus = !status || rowStatus === status;
+    
+    row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+  });
+});
+
+// Status filter
+document.getElementById('statusFilter').addEventListener('change', (e) => {
+  const search = document.getElementById('searchInput').value.toLowerCase();
+  const status = e.target.value;
+  
+  document.querySelectorAll('.reservation-row').forEach(row => {
+    const name = row.dataset.name;
+    const email = row.dataset.email;
+    const rowStatus = row.dataset.status;
+    
+    const matchesSearch = name.includes(search) || email.includes(search);
+    const matchesStatus = !status || rowStatus === status;
+    
+    row.style.display = (matchesSearch && matchesStatus) ? '' : 'none';
+  });
+});
+
+// Delete functionality
+document.querySelectorAll('.delete-btn').forEach(btn => {
+  btn.addEventListener('click', (e) => {
+    if (confirm('Tem a certeza que quer deletar esta reserva?')) {
+      const resId = btn.dataset.id;
+      const form = document.createElement('form');
+      form.method = 'POST';
+      form.action = `{{ url_for('admin.delete_reservation', lang='pt', res_id='') }}${resId}`;
+      document.body.appendChild(form);
+      form.submit();
+    }
+  });
+});
+</script>
+{% endblock %}

@@ -1,0 +1,77 @@
+{% extends "base.html" %}
+
+{% block title %} - Pricing Management {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h3">💰 Pricing Management</h1>
+    </div>
+    <div class="col-md-6 text-end">
+      <a href="{{ url_for('admin.dashboard', lang='en') }}" class="btn btn-secondary btn-sm">← Back</a>
+    </div>
+  </div>
+
+  <div class="row">
+    {% for slug, price in prices.items() %}
+      <div class="col-md-6 col-lg-4 mb-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">{{ room_names.get(slug, {}).get('en', slug) }}</h5>
+            <p class="card-text text-muted small">{{ slug }}</p>
+            
+            <div class="input-group mb-2">
+              <span class="input-group-text">€</span>
+              <input type="number" class="form-control price-input" data-room-slug="{{ slug }}" value="{{ "%.2f"|format(price) }}" step="0.01" min="0">
+            </div>
+            
+            <button class="btn btn-sm btn-primary w-100 update-price-btn" data-room-slug="{{ slug }}">
+              Update
+            </button>
+            <div class="alert alert-success d-none mt-2 update-message" role="alert"></div>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+</div>
+
+<script>
+document.querySelectorAll('.update-price-btn').forEach(btn => {
+  btn.addEventListener('click', async (e) => {
+    const roomSlug = btn.dataset.roomSlug;
+    const priceInput = document.querySelector(`.price-input[data-room-slug="${roomSlug}"]`);
+    const price = parseFloat(priceInput.value);
+    const messageDiv = btn.nextElementSibling;
+    
+    if (price < 0) {
+      messageDiv.textContent = 'Price cannot be negative';
+      messageDiv.classList.remove('d-none');
+      return;
+    }
+    
+    try {
+      const response = await fetch('{{ url_for("admin.update_pricing", lang="en") }}', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          room_slug: roomSlug,
+          price: price
+        })
+      });
+      
+      const data = await response.json();
+      messageDiv.textContent = data.message;
+      messageDiv.classList.remove('d-none');
+      setTimeout(() => messageDiv.classList.add('d-none'), 3000);
+    } catch (error) {
+      messageDiv.textContent = 'Error updating price';
+      messageDiv.classList.remove('d-none');
+    }
+  });
+});
+</script>
+{% endblock %}

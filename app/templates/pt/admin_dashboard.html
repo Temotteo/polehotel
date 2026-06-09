@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %} - Painel Administrativo {% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h3">📊 Painel Administrativo</h1>
+    </div>
+    <div class="col-md-6 text-end">
+      <a href="{{ url_for('admin.logout', lang='pt') }}" class="btn btn-danger btn-sm">Logout</a>
+    </div>
+  </div>
+
+  {% with messages = get_flashed_messages(category_filter=['success', 'danger']) %}
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <!-- Statistics -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-primary">
+        <div class="card-body">
+          <h5 class="card-title">Total de Reservas</h5>
+          <h2>{{ stats.total_reservations }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-success">
+        <div class="card-body">
+          <h5 class="card-title">Confirmadas</h5>
+          <h2>{{ stats.confirmed }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-warning">
+        <div class="card-body">
+          <h5 class="card-title">Pendentes</h5>
+          <h2>{{ stats.pending }}</h2>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-danger">
+        <div class="card-body">
+          <h5 class="card-title">Canceladas</h5>
+          <h2>{{ stats.cancelled }}</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Links -->
+  <div class="row mb-4">
+    <div class="col-md-4">
+      <a href="{{ url_for('admin.pricing', lang='pt') }}" class="card text-decoration-none">
+        <div class="card-body text-center">
+          <h5 class="card-title">💰 Gestão de Preços</h5>
+          <p class="card-text text-muted">Alterar preços das categorias</p>
+        </div>
+      </a>
+    </div>
+    <div class="col-md-4">
+      <a href="{{ url_for('admin.reservations', lang='pt') }}" class="card text-decoration-none">
+        <div class="card-body text-center">
+          <h5 class="card-title">📅 Gestão de Reservas</h5>
+          <p class="card-text text-muted">Ver e gerir todas as reservas</p>
+        </div>
+      </a>
+    </div>
+  </div>
+
+  <!-- Recent Reservations -->
+  <div class="card">
+    <div class="card-header">
+      <h5 class="mb-0">Últimas Reservas</h5>
+    </div>
+    <div class="card-body">
+      {% if reservations %}
+        <div class="table-responsive">
+          <table class="table table-hover">
+            <thead>
+              <tr>
+                <th>#ID</th>
+                <th>Hóspede</th>
+                <th>Quarto</th>
+                <th>Check-in</th>
+                <th>Check-out</th>
+                <th>Estado</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for reservation in reservations|reverse|list|first(10) %}
+                <tr>
+                  <td><strong>#{{ reservation.id }}</strong></td>
+                  <td>{{ reservation.guest_name }}<br><small class="text-muted">{{ reservation.email }}</small></td>
+                  <td>{{ reservation.room_name }}</td>
+                  <td>{{ reservation.check_in }}</td>
+                  <td>{{ reservation.check_out }}</td>
+                  <td>
+                    {% if reservation.status == 'confirmada' %}
+                      <span class="badge bg-success">Confirmada</span>
+                    {% elif reservation.status == 'pendente' %}
+                      <span class="badge bg-warning">Pendente</span>
+                    {% elif reservation.status == 'cancelada' %}
+                      <span class="badge bg-danger">Cancelada</span>
+                    {% else %}
+                      <span class="badge bg-secondary">{{ reservation.status }}</span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    <a href="{{ url_for('admin.reservation_detail', lang='pt', res_id=reservation.id) }}" class="btn btn-sm btn-info">Ver</a>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <p class="text-muted">Nenhuma reserva encontrada.</p>
+      {% endif %}
+    </div>
+  </div>
+</div>
+{% endblock %}

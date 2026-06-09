@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %} - Detalhes da Reserva {% endblock %}
+
+{% block content %}
+<div class="container py-5">
+  <div class="row mb-4">
+    <div class="col-md-6">
+      <h1 class="h3">📋 Reserva #{{ reservation.id }}</h1>
+    </div>
+    <div class="col-md-6 text-end">
+      <a href="{{ url_for('admin.reservations', lang='pt') }}" class="btn btn-secondary btn-sm">← Voltar</a>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Informações do Hóspede</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Nome:</strong> {{ reservation.guest_name }}</p>
+          <p><strong>Email:</strong> <a href="mailto:{{ reservation.email }}">{{ reservation.email }}</a></p>
+          <p><strong>Telefone:</strong> {{ reservation.phone }}</p>
+          <p><strong>Número de Hóspedes:</strong> {{ reservation.guests_count }}</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Informações da Reserva</h5>
+        </div>
+        <div class="card-body">
+          <p><strong>Quarto:</strong> {{ reservation.room_name }}</p>
+          <p><strong>Check-in:</strong> {{ reservation.check_in }}</p>
+          <p><strong>Check-out:</strong> {{ reservation.check_out }}</p>
+          <p><strong>Preço:</strong> €{{ "%.2f"|format(reservation.price) }}</p>
+          <p><strong>Criada em:</strong> {{ reservation.created_at }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Pedidos Especiais</h5>
+        </div>
+        <div class="card-body">
+          {% if reservation.special_requests %}
+            <p>{{ reservation.special_requests }}</p>
+          {% else %}
+            <p class="text-muted">Nenhum pedido especial</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Atualizar Estado</h5>
+        </div>
+        <div class="card-body">
+          <div class="mb-3">
+            <select class="form-select" id="statusSelect">
+              {% for status in statuses %}
+                <option value="{{ status }}" {% if reservation.status == status %}selected{% endif %}>{{ status_labels.get(status) }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <button class="btn btn-primary w-100" id="updateStatusBtn">Atualizar Estado</button>
+          <div class="alert alert-success d-none mt-2" id="successMessage" role="alert"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12">
+      <a href="{{ url_for('admin.delete_reservation', lang='pt', res_id=reservation.id) }}" class="btn btn-danger" onclick="return confirm('Tem a certeza que quer deletar esta reserva?')">Deletar Reserva</a>
+    </div>
+  </div>
+</div>
+
+<script>
+document.getElementById('updateStatusBtn').addEventListener('click', async () => {
+  const status = document.getElementById('statusSelect').value;
+  const successMessage = document.getElementById('successMessage');
+  
+  try {
+    const response = await fetch('{{ url_for("admin.update_reservation_status", lang="pt", res_id=reservation.id) }}', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ status: status })
+    });
+    
+    const data = await response.json();
+    if (data.success) {
+      successMessage.textContent = data.message;
+      successMessage.classList.remove('d-none');
+      setTimeout(() => location.reload(), 1500);
+    }
+  } catch (error) {
+    successMessage.textContent = 'Erro ao atualizar estado';
+    successMessage.classList.remove('d-none');
+  }
+});
+</script>
+{% endblock %}
