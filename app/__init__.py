@@ -11,7 +11,9 @@ def create_app():
 
     # 🔹 Register blueprints
     from .blueprints.main import bp as main_bp
+    from .blueprints.admin import bp as admin_bp
     app.register_blueprint(main_bp)
+    app.register_blueprint(admin_bp)
 
     # 🔹 Detect language
     @app.before_request
