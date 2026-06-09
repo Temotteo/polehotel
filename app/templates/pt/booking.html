@@ -25,7 +25,6 @@
   </div>
 </section>
 
-
 <!-- BOOKING CONTENT -->
 <section class="py-5" style="background:#f7f3ea;">
   <div class="container">
@@ -34,73 +33,73 @@
 
       <!-- FORM -->
       <div class="col-lg-7">
-        <h2 class="mb-4">Pedido de Reserva</h2>
+        <h2 class="mb-4">📋 Pedido de Reserva</h2>
 
-        <form method="post" action="#">
+        {% with messages = get_flashed_messages(category_filter=['success', 'danger']) %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-{{ 'success' if 'sucesso' in message or 'successfully' in message else 'danger' }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+              </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="post" action="{{ url_for('main.booking', lang='pt') }}">
 
           <div class="row">
             <div class="col-md-6 mb-3">
-              <label class="form-label">Check-in</label>
-              <input type="date" class="form-control" required>
+              <label class="form-label">Check-in *</label>
+              <input type="date" class="form-control" name="check_in" required>
             </div>
             <div class="col-md-6 mb-3">
-              <label class="form-label">Check-out</label>
-              <input type="date" class="form-control" required>
-            </div>
-          </div>
-
-          <div class="row">
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Adultos</label>
-              <select class="form-select">
-                {% for i in range(1,5) %}
-                <option>{{ i }}</option>
-                {% endfor %}
-              </select>
-            </div>
-            <div class="col-md-6 mb-3">
-              <label class="form-label">Crianças</label>
-              <select class="form-select">
-                {% for i in range(0,4) %}
-                <option>{{ i }}</option>
-                {% endfor %}
-              </select>
+              <label class="form-label">Check-out *</label>
+              <input type="date" class="form-control" name="check_out" required>
             </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Tipo de Quarto</label>
-            <select class="form-select">
-              <option>Quarto Casal Económico</option>
-              <option>Quarto Casal Standard</option>
-              <option>Quarto Duplo Standard</option>
-              <option>Quarto Executivo</option>
-              <option>Quarto Executivo Especial</option>
+            <label class="form-label">Tipo de Quarto *</label>
+            <select class="form-select" name="room_category" required>
+              <option value="">-- Selecione um quarto --</option>
+              {% for slug, room_info in room_categories.items() %}
+                <option value="{{ slug }}">
+                  {{ room_info.name }} - €{{ prices.get(slug, 0)|round(2) }} por noite
+                </option>
+              {% endfor %}
             </select>
           </div>
 
-          <div class="mb-3">
-            <label class="form-label">Nome Completo</label>
-            <input type="text" class="form-control" required>
+          <div class="row">
+            <div class="col-md-6 mb-3">
+              <label class="form-label">Nº de Hóspedes *</label>
+              <input type="number" class="form-control" name="guests_count" min="1" max="4" required>
+            </div>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Email</label>
-            <input type="email" class="form-control" required>
+            <label class="form-label">Nome Completo *</label>
+            <input type="text" class="form-control" name="guest_name" required>
           </div>
 
           <div class="mb-3">
-            <label class="form-label">Telefone / WhatsApp</label>
-            <input type="text" class="form-control">
+            <label class="form-label">Email *</label>
+            <input type="email" class="form-control" name="email" required>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Telefone / WhatsApp *</label>
+            <input type="tel" class="form-control" name="phone" required>
           </div>
 
           <div class="mb-4">
-            <label class="form-label">Observações</label>
-            <textarea class="form-control" rows="3"></textarea>
+            <label class="form-label">Observações / Pedidos Especiais</label>
+            <textarea class="form-control" name="special_requests" rows="3" placeholder="Ex: Pré-arranjo de cama de criança, alergias alimentares, etc."></textarea>
           </div>
 
-          <button class="btn btn-primary btn-lg">
-            Enviar Pedido de Reserva
+          <button type="submit" class="btn btn-primary btn-lg w-100">
+            ✅ Enviar Pedido de Reserva
           </button>
 
         </form>
@@ -108,20 +107,37 @@
 
       <!-- INFO -->
       <div class="col-lg-5">
-        <h3 class="mb-4">Outras Formas de Reserva</h3>
+        <h3 class="mb-4">💡 Informações Úteis</h3>
 
-        <p>
-          Também pode efetuar a sua reserva através das seguintes plataformas:
-        </p>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">📧 Confirmação Automática</h5>
+            <p class="card-text">Receberá um email de confirmação imediatamente após submeter o pedido. Em breve, a nossa equipa confirmará a sua reserva.</p>
+          </div>
+        </div>
 
-        <ul class="list-unstyled">
-          <li class="mb-2">✔ Booking.com</li>
-          <li class="mb-2">✔ Airbnb</li>
-          <li class="mb-2">✔ Contacto direto via WhatsApp</li>
-        </ul>
+        <div class="card mb-3">
+          <div class="card-body">
+            <h5 class="card-title">🏨 Outras Formas de Reserva</h5>
+            <ul class="list-unstyled mb-0">
+              <li class="mb-2">✔ <a href="https://booking.com" target="_blank">Booking.com</a></li>
+              <li class="mb-2">✔ <a href="https://airbnb.com" target="_blank">Airbnb</a></li>
+              <li class="mb-2">✔ <a href="https://wa.me/258869349474" target="_blank">WhatsApp</a></li>
+            </ul>
+          </div>
+        </div>
 
-        <a href="{{ with_lang('main.contact') }}"
-           class="btn btn-outline-primary mt-3">
+        <div class="card">
+          <div class="card-body">
+            <h5 class="card-title">📞 Contactos</h5>
+            <p class="card-text">
+              <strong>Email:</strong> <a href="mailto:amilcarfernandes1967@gmail.com">amilcarfernandes1967@gmail.com</a><br>
+              <strong>WhatsApp:</strong> <a href="https://wa.me/258869349474">+258 86 9349474</a>
+            </p>
+          </div>
+        </div>
+
+        <a href="{{ with_lang('main.contact') }}" class="btn btn-outline-primary mt-3 w-100">
           Falar connosco
         </a>
 
