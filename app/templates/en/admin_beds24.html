@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %} - Beds24 API {% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-center gap-3 mb-4">
+    <div>
+      <h1 class="h3 mb-1">Beds24 API V2</h1>
+      <p class="text-muted mb-0">Configure connection, tokens, and room mappings.</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard', lang='en') }}" class="btn btn-outline-secondary btn-sm">Back to dashboard</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="row g-4">
+    <div class="col-lg-8">
+      <form method="post" action="{{ url_for('admin.beds24', lang='en') }}" class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Settings</h5>
+        </div>
+        <div class="card-body">
+          <div class="form-check form-switch mb-4">
+            <input class="form-check-input" type="checkbox" role="switch" id="enabled" name="enabled" {% if settings.enabled %}checked{% endif %}>
+            <label class="form-check-label" for="enabled">Enable Beds24 integration</label>
+          </div>
+
+          <div class="row g-3">
+            <div class="col-md-8">
+              <label class="form-label" for="api_base_url">API base URL</label>
+              <input type="url" class="form-control" id="api_base_url" name="api_base_url" value="{{ settings.api_base_url }}" placeholder="https://api.beds24.com/v2">
+            </div>
+            <div class="col-md-4">
+              <label class="form-label" for="property_id">Property ID</label>
+              <input type="text" class="form-control" id="property_id" name="property_id" value="{{ settings.property_id }}" placeholder="Example: 123456">
+            </div>
+          </div>
+
+          <hr class="my-4">
+
+          <div class="row g-3">
+            <div class="col-md-6">
+              <label class="form-label" for="long_life_token">Long life token</label>
+              <input type="password" class="form-control" id="long_life_token" name="long_life_token" placeholder="Leave blank to keep current">
+              {% if settings.long_life_token %}
+                <div class="form-text">Current: {{ mask_secret(settings.long_life_token) }}</div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="clear_long_life_token" name="clear_long_life_token">
+                  <label class="form-check-label" for="clear_long_life_token">Remove saved token</label>
+                </div>
+              {% endif %}
+            </div>
+            <div class="col-md-6">
+              <label class="form-label" for="refresh_token">Refresh token</label>
+              <input type="password" class="form-control" id="refresh_token" name="refresh_token" placeholder="Leave blank to keep current">
+              {% if settings.refresh_token %}
+                <div class="form-text">Current: {{ mask_secret(settings.refresh_token) }}</div>
+                <div class="form-check mt-2">
+                  <input class="form-check-input" type="checkbox" id="clear_refresh_token" name="clear_refresh_token">
+                  <label class="form-check-label" for="clear_refresh_token">Remove refresh token</label>
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <div class="mt-3">
+            <label class="form-label" for="webhook_secret">Webhook secret</label>
+            <input type="password" class="form-control" id="webhook_secret" name="webhook_secret" value="{{ settings.webhook_secret }}" placeholder="Shared secret for webhooks">
+          </div>
+
+          <hr class="my-4">
+
+          <h6>Room mappings</h6>
+          <p class="text-muted small">Enter the matching Beds24 Room ID for each local room.</p>
+          <div class="row g-3">
+            {% for slug, names in room_names.items() %}
+              <div class="col-md-6">
+                <label class="form-label" for="room_{{ slug }}">{{ names.en }}</label>
+                <input type="text" class="form-control" id="room_{{ slug }}" name="room_{{ slug }}" value="{{ settings.room_mappings.get(slug, '') }}" placeholder="Beds24 Room ID">
+              </div>
+            {% endfor %}
+          </div>
+        </div>
+        <div class="card-footer d-flex justify-content-end gap-2">
+          <button type="submit" class="btn btn-primary">Save settings</button>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-lg-4">
+      <div class="card mb-4">
+        <div class="card-header">
+          <h5 class="mb-0">Status</h5>
+        </div>
+        <div class="card-body">
+          <dl class="row mb-0">
+            <dt class="col-5">Integration</dt>
+            <dd class="col-7">
+              <span class="badge {{ 'bg-success' if settings.enabled else 'bg-secondary' }}">{{ 'Active' if settings.enabled else 'Inactive' }}</span>
+            </dd>
+            <dt class="col-5">Long token</dt>
+            <dd class="col-7">{{ mask_secret(settings.long_life_token) or 'Not configured' }}</dd>
+            <dt class="col-5">Refresh</dt>
+            <dd class="col-7">{{ mask_secret(settings.refresh_token) or 'Not configured' }}</dd>
+            <dt class="col-5">Access token</dt>
+            <dd class="col-7">{{ mask_secret(settings.access_token) or 'Not generated yet' }}</dd>
+            <dt class="col-5">Last test</dt>
+            <dd class="col-7">{{ settings.last_test_at or 'No test yet' }}</dd>
+          </dl>
+          {% if settings.last_test_message %}
+            <div class="alert alert-{{ settings.last_test_status or 'secondary' }} mt-3 mb-0">{{ settings.last_test_message }}</div>
+          {% endif %}
+        </div>
+        <div class="card-footer">
+          <form method="post" action="{{ url_for('admin.beds24_test', lang='en') }}">
+            <button type="submit" class="btn btn-outline-primary w-100">Test connection</button>
+          </form>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <h5 class="mb-0">Preparation</h5>
+        </div>
+        <div class="card-body">
+          <ul class="small mb-0">
+            <li>Generate a token or invite code in the Beds24 API area.</li>
+            <li>Use properties, inventory, and bookings scopes as needed.</li>
+            <li>Copy the Property ID and Room IDs from Beds24.</li>
+            <li>Enable booking webhooks in Beds24 when synchronization is ready.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

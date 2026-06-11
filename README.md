@@ -37,9 +37,20 @@ Open: http://127.0.0.1:5000/pt/  or  /en/
 
 ## Integration Points
 - **Bookings**: replace CTA anchors with your booking engine or custom route.
+- **Beds24 API V2**: configure tokens, Property ID, Room IDs and connection testing in `/pt/admin/beds24`.
 - **Airbnb/Booking.com**: add external links or embed widgets when available.
 - **WhatsApp**: set `wa.me` number on Contact page and/or integrate business API (UltraMsg/Meta).
 - **Events form**: connect to email/DB in `/events` POST handler.
+
+## Beds24 Setup
+The admin panel stores runtime settings in `data/beds24_settings.json`, which is ignored by git so tokens are not committed.
+
+Recommended setup:
+1. Generate a Beds24 API V2 long life token or invite/refresh token in Beds24.
+2. Enable the required scopes for properties, inventory and bookings.
+3. Open `/pt/admin/beds24` or `/en/admin/beds24`.
+4. Enter the API base URL, Property ID, tokens and each Beds24 Room ID.
+5. Use "Testar ligacao" / "Test connection" to verify access to `GET /properties`.
 
 ## Notes
 This template intentionally uses a minimal i18n approach (URL + lang). For full i18n, consider Flask-Babel.

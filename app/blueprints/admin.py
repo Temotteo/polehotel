@@ -1,5 +1,7 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
-from app.models import PriceManager, ReservationManager, ROOM_NAMES
+from datetime import datetime
+from app.beds24 import Beds24Client, Beds24Error
+from app.models import Beds24SettingsManager, PriceManager, ReservationManager, ROOM_NAMES
 
 bp = Blueprint('admin', __name__, url_prefix='/<lang>/admin')
 
@@ -69,6 +71,89 @@ def pricing(lang):
     return render_template(f"{lang}/admin_pricing.html", 
                          prices=prices,
                          room_names=ROOM_NAMES)
+
+@bp.route('/beds24', methods=['GET', 'POST'])
+@require_admin
+def beds24(lang):
+    settings = Beds24SettingsManager.load_settings()
+
+    if request.method == 'POST':
+        room_mappings = {}
+        for slug in ROOM_NAMES:
+            room_mappings[slug] = request.form.get(f'room_{slug}', '').strip()
+
+        updated = {
+            'enabled': request.form.get('enabled') == 'on',
+            'api_base_url': request.form.get('api_base_url', '').strip() or 'https://api.beds24.com/v2',
+            'property_id': request.form.get('property_id', '').strip(),
+            'webhook_secret': request.form.get('webhook_secret', '').strip(),
+            'room_mappings': room_mappings,
+        }
+
+        long_life_token = request.form.get('long_life_token', '').strip()
+        refresh_token = request.form.get('refresh_token', '').strip()
+        if request.form.get('clear_long_life_token') == 'on':
+            updated['long_life_token'] = ''
+        if request.form.get('clear_refresh_token') == 'on':
+            updated['refresh_token'] = ''
+            updated['access_token'] = ''
+            updated['access_token_expires_at'] = ''
+        if long_life_token:
+            updated['long_life_token'] = long_life_token
+        if refresh_token:
+            updated['refresh_token'] = refresh_token
+            updated['access_token'] = ''
+            updated['access_token_expires_at'] = ''
+
+        if Beds24SettingsManager.save_settings(updated):
+            flash('Configuração Beds24 guardada.' if lang == 'pt' else 'Beds24 settings saved.', 'success')
+        else:
+            flash('Erro ao guardar configuração Beds24.' if lang == 'pt' else 'Error saving Beds24 settings.', 'danger')
+        return redirect(url_for('admin.beds24', lang=lang))
+
+    return render_template(
+        f"{lang}/admin_beds24.html",
+        settings=settings,
+        room_names=ROOM_NAMES,
+        mask_secret=Beds24SettingsManager.mask_secret,
+    )
+
+@bp.route('/beds24/test', methods=['POST'])
+@require_admin
+def beds24_test(lang):
+    settings = Beds24SettingsManager.load_settings()
+    try:
+        client = Beds24Client(settings)
+        result = client.get_properties()
+        data = result.get('data', {})
+        if isinstance(data, dict):
+            properties = data.get('data') or data.get('properties') or []
+        elif isinstance(data, list):
+            properties = data
+        else:
+            properties = []
+        message = (
+            f"Ligação Beds24 OK. Propriedades recebidas: {len(properties)}"
+            if lang == 'pt'
+            else f"Beds24 connection OK. Properties received: {len(properties)}"
+        )
+        Beds24SettingsManager.save_settings({
+            'access_token': client.settings.get('access_token', settings.get('access_token', '')),
+            'access_token_expires_at': client.settings.get('access_token_expires_at', settings.get('access_token_expires_at', '')),
+            'last_test_at': datetime.utcnow().isoformat(),
+            'last_test_status': 'success',
+            'last_test_message': message,
+        })
+        flash(message, 'success')
+    except Beds24Error as e:
+        message = str(e)
+        Beds24SettingsManager.save_settings({
+            'last_test_at': datetime.utcnow().isoformat(),
+            'last_test_status': 'danger',
+            'last_test_message': message,
+        })
+        flash(message, 'danger')
+    return redirect(url_for('admin.beds24', lang=lang))
 
 @bp.route('/pricing/update', methods=['POST'])
 @require_admin

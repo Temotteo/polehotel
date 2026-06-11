@@ -1,5 +1,4 @@
 import json
-import os
 from datetime import datetime
 from pathlib import Path
 
@@ -16,6 +15,7 @@ except Exception as e:
 
 PRICES_FILE = DATA_DIR / 'prices.json'
 RESERVATIONS_FILE = DATA_DIR / 'reservations.json'
+BEDS24_SETTINGS_FILE = DATA_DIR / 'beds24_settings.json'
 
 # Default prices
 DEFAULT_PRICES = {
@@ -34,6 +34,21 @@ ROOM_NAMES = {
     "executivo-especial": {"pt": "Executivo Especial", "en": "Executive Special"},
     "executivo-junior": {"pt": "Executivo Junior", "en": "Executive Junior"},
     "executivo-master": {"pt": "Executivo Master", "en": "Executive Master"}
+}
+
+BEDS24_DEFAULT_SETTINGS = {
+    'enabled': False,
+    'api_base_url': 'https://api.beds24.com/v2',
+    'long_life_token': '',
+    'refresh_token': '',
+    'access_token': '',
+    'access_token_expires_at': '',
+    'property_id': '',
+    'webhook_secret': '',
+    'room_mappings': {slug: '' for slug in ROOM_NAMES},
+    'last_test_at': '',
+    'last_test_status': '',
+    'last_test_message': '',
 }
 
 # Initialize prices file if it doesn't exist
@@ -86,6 +101,53 @@ class PriceManager:
         prices[room_slug] = float(price)
         PriceManager.save_prices(prices)
         return prices
+
+
+class Beds24SettingsManager:
+    @staticmethod
+    def default_settings():
+        settings = BEDS24_DEFAULT_SETTINGS.copy()
+        settings['room_mappings'] = BEDS24_DEFAULT_SETTINGS['room_mappings'].copy()
+        return settings
+
+    @staticmethod
+    def load_settings():
+        try:
+            settings = Beds24SettingsManager.default_settings()
+            if BEDS24_SETTINGS_FILE.exists():
+                with open(BEDS24_SETTINGS_FILE, 'r') as f:
+                    saved = json.load(f)
+                settings.update(saved)
+                mappings = BEDS24_DEFAULT_SETTINGS['room_mappings'].copy()
+                mappings.update(saved.get('room_mappings', {}))
+                settings['room_mappings'] = mappings
+            return settings
+        except Exception as e:
+            print(f"Erro ao carregar configurações Beds24: {e}")
+            return Beds24SettingsManager.default_settings()
+
+    @staticmethod
+    def save_settings(settings):
+        try:
+            current = Beds24SettingsManager.load_settings()
+            current.update(settings)
+            mappings = BEDS24_DEFAULT_SETTINGS['room_mappings'].copy()
+            mappings.update(current.get('room_mappings', {}))
+            current['room_mappings'] = mappings
+            with open(BEDS24_SETTINGS_FILE, 'w') as f:
+                json.dump(current, f, indent=2)
+            return True
+        except Exception as e:
+            print(f"Erro ao guardar configurações Beds24: {e}")
+            return False
+
+    @staticmethod
+    def mask_secret(value):
+        if not value:
+            return ''
+        if len(value) <= 8:
+            return '****'
+        return f"{value[:4]}****{value[-4:]}"
 
 
 class ReservationManager:
