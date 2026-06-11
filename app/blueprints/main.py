@@ -281,7 +281,7 @@ def room_detail(lang, slug):
     if not room:
         abort(404)
     content = room.get(lang, room["pt"])
-    return render_template(f"{lang}/room_detail.html", room=content)
+    return render_template(f"{lang}/room_detail.html", room=content, slug=slug)
 
 @bp.route('/')
 def home_redirect():
@@ -520,10 +520,13 @@ def booking(lang):
     prices = PriceManager.load_prices()
     room_categories = {k: v[lang] for k, v in ROOM_CATEGORIES.items()}
     
+    selected_room = request.args.get("room_category", "")
+
     return render_template(
         tpath('booking'),
         room_categories=room_categories,
         prices=prices,
+        selected_room=selected_room,
         all_room_categories=ROOM_CATEGORIES
     )
 

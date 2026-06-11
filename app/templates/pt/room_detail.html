@@ -70,7 +70,7 @@
       {% endfor %}
     </ul>
 
-    <a href="#booking" class="btn btn-primary btn-lg mt-4">
+    <a href="{{ url_for('main.booking', lang='pt', room_category=slug) }}" class="btn btn-primary btn-lg mt-4">
       Reservar este quarto
     </a>
 

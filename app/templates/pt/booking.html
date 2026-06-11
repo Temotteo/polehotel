@@ -64,7 +64,7 @@
             <select class="form-select" name="room_category" required>
               <option value="">-- Selecione um quarto --</option>
               {% for slug, room_info in room_categories.items() %}
-                <option value="{{ slug }}">
+                <option value="{{ slug }}" {% if selected_room == slug %}selected{% endif %}>
                   {{ room_info.name }} - €{{ prices.get(slug, 0)|round(2) }} por noite
                 </option>
               {% endfor %}
