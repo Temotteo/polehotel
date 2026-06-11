@@ -288,7 +288,8 @@ def room_detail(lang, slug):
         abort(404)
     content = dict(room.get(lang, room["pt"]))
     content["gallery"] = room.get("gallery", [])
-    return render_template(f"{lang}/room_detail.html", room=content, slug=slug)
+    price = PriceManager.get_price(slug)
+    return render_template(f"{lang}/room_detail.html", room=content, slug=slug, price=price)
 
 @bp.route('/')
 def home_redirect():

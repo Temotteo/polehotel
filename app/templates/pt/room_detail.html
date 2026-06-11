@@ -63,6 +63,10 @@
       {{ room.desc }}
     </p>
 
+    <p class="h5 mb-4">
+      <strong>Preço por noite:</strong> MZN {{ "%.2f"|format(price) }}
+    </p>
+
     <h5 class="mb-3">Comodidades</h5>
     <ul class="list-unstyled row">
       {% for f in room.features %}
