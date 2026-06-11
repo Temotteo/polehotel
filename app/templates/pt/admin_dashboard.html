@@ -109,7 +109,7 @@
               </tr>
             </thead>
             <tbody>
-              {% for reservation in reservations|reverse|list|first(10) %}
+              {% for reservation in recent_reservations %}
                 <tr>
                   <td><strong>#{{ reservation.id }}</strong></td>
                   <td>{{ reservation.guest_name }}<br><small class="text-muted">{{ reservation.email }}</small></td>

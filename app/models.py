@@ -168,11 +168,35 @@ class ReservationManager:
     }
 
     @staticmethod
+    def normalize_reservation(reservation):
+        if not isinstance(reservation, dict):
+            return {}
+
+        room_slug = reservation.get('room_slug', '')
+        normalized = reservation.copy()
+        normalized.setdefault('id', 0)
+        normalized.setdefault('guest_name', '')
+        normalized.setdefault('email', '')
+        normalized.setdefault('phone', '')
+        normalized.setdefault('room_slug', room_slug)
+        normalized.setdefault('room_name', ROOM_NAMES.get(room_slug, {}).get('pt', room_slug))
+        normalized.setdefault('check_in', '')
+        normalized.setdefault('check_out', '')
+        normalized.setdefault('guests_count', 0)
+        normalized.setdefault('special_requests', '')
+        normalized.setdefault('status', 'pendente')
+        normalized.setdefault('created_at', '')
+        normalized.setdefault('price', PriceManager.get_price(room_slug) if room_slug else 0)
+        return normalized
+
+    @staticmethod
     def load_reservations():
         try:
             if RESERVATIONS_FILE.exists():
                 with open(RESERVATIONS_FILE, 'r') as f:
-                    return json.load(f)
+                    reservations = json.load(f)
+                if isinstance(reservations, list):
+                    return [ReservationManager.normalize_reservation(r) for r in reservations]
             return []
         except Exception as e:
             print(f"Erro ao carregar reservas: {e}")

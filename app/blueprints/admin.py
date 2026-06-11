@@ -52,14 +52,16 @@ def dashboard(lang):
     # Statistics
     stats = {
         'total_reservations': len(reservations),
-        'confirmed': len([r for r in reservations if r['status'] == 'confirmada']),
-        'pending': len([r for r in reservations if r['status'] == 'pendente']),
-        'cancelled': len([r for r in reservations if r['status'] == 'cancelada']),
-        'completed': len([r for r in reservations if r['status'] == 'finalizada'])
+        'confirmed': len([r for r in reservations if r.get('status') == 'confirmada']),
+        'pending': len([r for r in reservations if r.get('status') == 'pendente']),
+        'cancelled': len([r for r in reservations if r.get('status') == 'cancelada']),
+        'completed': len([r for r in reservations if r.get('status') == 'finalizada'])
     }
+    recent_reservations = list(reversed(reservations))[:10]
     
     return render_template(f"{lang}/admin_dashboard.html", 
                          reservations=reservations, 
+                         recent_reservations=recent_reservations,
                          prices=prices,
                          stats=stats,
                          room_names=ROOM_NAMES)
