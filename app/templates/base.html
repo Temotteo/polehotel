@@ -59,7 +59,7 @@
     <p class="mb-0 small text-muted">&copy; {{ 2025 }} Pole Hotel. {{ 'Todos os direitos reservados.' if lang=='pt' else 'All rights reserved.' }}</p>
     <div class="small">
        <a href="https://www.instagram.com/polehotel/"  class="badge text-bg-light me-2">Instagram</a> <!-- alterado de <span> para <a> para redirecionar ao instagram -->
-      <a href="https://wa.me/258869349474" target="_blank" class="badge badge-brand text-white text-decoration-none">WhatsApp</a> <!-- alterado de <span> para <a> para redirecionar ao WhatsApp -->
+      <a href="{{ contact.whatsapp_url }}" target="_blank" class="badge badge-brand text-white text-decoration-none">WhatsApp</a> <!-- alterado de <span> para <a> para redirecionar ao WhatsApp -->
     </div>
   </div>
 </footer>

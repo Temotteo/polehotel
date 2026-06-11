@@ -10,7 +10,13 @@ def create_app():
     app.config['DEFAULT_LANG'] = os.getenv('DEFAULT_LANG', 'pt')
 
     # 🔹 Register blueprints
-    from .blueprints.main import bp as main_bp
+    from .blueprints.main import (
+        bp as main_bp,
+        CONTACT_EMAIL,
+        CONTACT_PHONE_DISPLAY,
+        CONTACT_PHONE_TEL,
+        CONTACT_WHATSAPP_URL,
+    )
     from .blueprints.admin import bp as admin_bp
     app.register_blueprint(main_bp)
     app.register_blueprint(admin_bp)
@@ -43,6 +49,14 @@ def create_app():
 
             return url_for(endpoint, **args)
 
-        return dict(with_lang=with_lang)
+        return dict(
+            with_lang=with_lang,
+            contact={
+                "email": CONTACT_EMAIL,
+                "phone_display": CONTACT_PHONE_DISPLAY,
+                "phone_tel": CONTACT_PHONE_TEL,
+                "whatsapp_url": CONTACT_WHATSAPP_URL,
+            },
+        )
 
     return app

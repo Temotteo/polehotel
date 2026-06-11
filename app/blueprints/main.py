@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, abort, flash, redirect, url_for
 from app.models import ReservationManager, PriceManager
+import os
 import smtplib
 from email.mime.text import MIMEText
 from email.mime.multipart import MIMEMultipart
@@ -8,10 +9,20 @@ from email.mime.multipart import MIMEMultipart
 # CONFIGURAÇÃO DE EMAIL (GMAIL)
 # ===============================
 
-EMAIL_REMETENTE = "noreplythisemail100@gmail.com"
-EMAIL_SENHA = "cpjxewnfvescnghy"
-EMAIL_DESTINO = "amilcarfernandes1967@gmail.com"
-EMAIL_DESTINOS = ["amilcarfernandes1967@gmail.com", "dmicasmouse01@gmail.com"]
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "info@polehotel.com")
+CONTACT_PHONE_DISPLAY = os.getenv("CONTACT_PHONE_DISPLAY", "+258 00 000 0000")
+CONTACT_PHONE_TEL = os.getenv("CONTACT_PHONE_TEL", "+258000000000")
+CONTACT_WHATSAPP_NUMBER = os.getenv("CONTACT_WHATSAPP_NUMBER", "258000000000")
+CONTACT_WHATSAPP_URL = f"https://wa.me/{CONTACT_WHATSAPP_NUMBER}"
+
+EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE", "noreply@polehotel.com")
+EMAIL_SENHA = os.getenv("EMAIL_SENHA", "")
+EMAIL_DESTINO = os.getenv("EMAIL_DESTINO", CONTACT_EMAIL)
+EMAIL_DESTINOS = [
+    email.strip()
+    for email in os.getenv("EMAIL_DESTINOS", EMAIL_DESTINO).split(",")
+    if email.strip()
+]
 
 bp = Blueprint('main', __name__)
 
@@ -127,8 +138,8 @@ def send_booking_confirmation_email(reservation, lang):
                     
                     <p>Em breve receberá uma confirmação final via email. Pode contactar-nos através de:</p>
                     <ul>
-                        <li>📧 Email: {EMAIL_DESTINO}</li>
-                        <li>📱 WhatsApp: <a href="https://wa.me/258869349474">+258 86 9349474</a></li>
+                        <li>📧 Email: {CONTACT_EMAIL}</li>
+                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_PHONE_DISPLAY}</a></li>
                         <li>🌐 Website: <a href="https://polehotel.onrender.com">polehotel.onrender.com</a></li>
                     </ul>
                     
@@ -168,8 +179,8 @@ def send_booking_confirmation_email(reservation, lang):
                     
                     <p>You will soon receive a final confirmation via email. You can contact us through:</p>
                     <ul>
-                        <li>📧 Email: {EMAIL_DESTINO}</li>
-                        <li>📱 WhatsApp: <a href="https://wa.me/258869349474">+258 86 9349474</a></li>
+                        <li>📧 Email: {CONTACT_EMAIL}</li>
+                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_PHONE_DISPLAY}</a></li>
                         <li>🌐 Website: <a href="https://polehotel.onrender.com">polehotel.onrender.com</a></li>
                     </ul>
                     

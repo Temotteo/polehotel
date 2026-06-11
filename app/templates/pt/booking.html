@@ -122,7 +122,7 @@
             <ul class="list-unstyled mb-0">
               <li class="mb-2">✔ <a href="https://booking.com" target="_blank">Booking.com</a></li>
               <li class="mb-2">✔ <a href="https://airbnb.com" target="_blank">Airbnb</a></li>
-              <li class="mb-2">✔ <a href="https://wa.me/258869349474" target="_blank">WhatsApp</a></li>
+              <li class="mb-2">✔ <a href="{{ contact.whatsapp_url }}" target="_blank">WhatsApp</a></li>
             </ul>
           </div>
         </div>
@@ -131,8 +131,8 @@
           <div class="card-body">
             <h5 class="card-title">📞 Contactos</h5>
             <p class="card-text">
-              <strong>Email:</strong> <a href="mailto:amilcarfernandes1967@gmail.com">amilcarfernandes1967@gmail.com</a><br>
-              <strong>WhatsApp:</strong> <a href="https://wa.me/258869349474">+258 86 9349474</a>
+              <strong>Email:</strong> <a href="mailto:{{ contact.email }}">{{ contact.email }}</a><br>
+              <strong>WhatsApp:</strong> <a href="{{ contact.whatsapp_url }}">{{ contact.phone_display }}</a>
             </p>
           </div>
         </div>

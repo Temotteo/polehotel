@@ -50,15 +50,15 @@
   <h6 class="section-title"><strong>Details</strong></h6>
 
   <p><strong>Phone:</strong> 
-    <a href="tel:+258869349474">+258 86 934 9474</a>
+    <a href="tel:{{ contact.phone_tel }}">{{ contact.phone_display }}</a>
   </p>
 
   <p><strong>Email:</strong> 
-    <a href="mailto:PolyHotel@email.com">PolyHotel@email.com</a>
+    <a href="mailto:{{ contact.email }}">{{ contact.email }}</a>
   </p>
 
   <p><strong>WhatsApp:</strong> 
-    <a href="https://wa.me/258869349474" target="_blank">+258 86 934 9474</a>
+    <a href="{{ contact.whatsapp_url }}" target="_blank">{{ contact.phone_display }}</a>
   </p>
 
   <p><strong>Facebook:</strong> 
