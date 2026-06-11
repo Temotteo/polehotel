@@ -76,7 +76,7 @@
                   <td>{{ reservation.check_in }}</td>
                   <td>{{ reservation.check_out }}</td>
                   <td>{{ reservation.guests_count }}</td>
-                  <td>€{{ "%.2f"|format(reservation.price) }}</td>
+                  <td>MZN {{ "%.2f"|format(reservation.price) }}</td>
                   <td>
                     {% if reservation.status == 'confirmada' %}
                       <span class="badge bg-success">Confirmada</span>

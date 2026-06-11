@@ -138,7 +138,7 @@ def send_booking_confirmation_email(reservation, lang):
                         <p><strong>Check-in:</strong> {reservation['check_in']}</p>
                         <p><strong>Check-out:</strong> {reservation['check_out']}</p>
                         <p><strong>Número de Hóspedes:</strong> {reservation['guests_count']}</p>
-                        <p><strong>Preço:</strong> €{reservation['price']:.2f}</p>
+                        <p><strong>Preço:</strong> MZN {reservation['price']:.2f}</p>
                         <p><strong>Estado:</strong> <span style="color: #ff9800; font-weight: bold;">PENDENTE</span></p>
                     </div>
                     
@@ -179,7 +179,7 @@ def send_booking_confirmation_email(reservation, lang):
                         <p><strong>Check-in:</strong> {reservation['check_in']}</p>
                         <p><strong>Check-out:</strong> {reservation['check_out']}</p>
                         <p><strong>Number of Guests:</strong> {reservation['guests_count']}</p>
-                        <p><strong>Price:</strong> €{reservation['price']:.2f}</p>
+                        <p><strong>Price:</strong> MZN {reservation['price']:.2f}</p>
                         <p><strong>Status:</strong> <span style="color: #ff9800; font-weight: bold;">PENDING</span></p>
                     </div>
                     
@@ -240,7 +240,7 @@ def send_booking_notification_to_admin(reservation, lang):
                     <p><strong>Check-in:</strong> {reservation['check_in']}</p>
                     <p><strong>Check-out:</strong> {reservation['check_out']}</p>
                     <p><strong>Número de Hóspedes:</strong> {reservation['guests_count']}</p>
-                    <p><strong>Preço:</strong> €{reservation['price']:.2f}</p>
+                    <p><strong>Preço:</strong> MZN {reservation['price']:.2f}</p>
                 </div>
                 
                 <p><a href="https://polehotel.onrender.com/pt/admin/reservations/{reservation['id']}" style="background: #8B6F47; color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block;">
