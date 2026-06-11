@@ -148,7 +148,7 @@ document.querySelectorAll('.delete-btn').forEach(btn => {
       const resId = btn.dataset.id;
       const form = document.createElement('form');
       form.method = 'POST';
-      form.action = `{{ url_for('admin.delete_reservation', lang='pt', res_id='') }}${resId}`;
+      form.action = `{{ url_for('admin.reservations', lang='pt') }}/${resId}/delete`;
       document.body.appendChild(form);
       form.submit();
     }
