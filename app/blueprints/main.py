@@ -39,7 +39,8 @@ ROOM_CATEGORIES = {
             "name": "Economy Double",
             "desc": "Functional and comfortable option for practical stays.",
             "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"],
-        }
+        },
+        "gallery": ["room1.jpg"],
     },
     "casal-standard": {
         "pt": {
@@ -51,7 +52,8 @@ ROOM_CATEGORIES = {
             "name": "Standard Double",
             "desc": "Balanced comfort with a welcoming design.",
             "features": ["Double bed", "TV", "Wi-Fi", "Air conditioning"],
-        }
+        },
+        "gallery": ["room2.jpg"],
     },
     "duplo-standard": {
         "pt": {
@@ -63,7 +65,8 @@ ROOM_CATEGORIES = {
             "name": "Standard Twin",
             "desc": "Ideal for two guests with space and comfort.",
             "features": ["Twin beds", "TV", "Wi-Fi", "Air conditioning"],
-        }
+        },
+        "gallery": ["room3.jpg"],
     },
     "executivo-especial": {
         "pt": {
@@ -75,7 +78,8 @@ ROOM_CATEGORIES = {
             "name": "Executive Special",
             "desc": "Premium category with refined details.",
             "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"],
-        }
+        },
+        "gallery": ["room4.jpg"],
     },
     "executivo-junior": {
         "pt": {
@@ -87,7 +91,8 @@ ROOM_CATEGORIES = {
             "name": "Executive Junior",
             "desc": "Spacious layout, ideal for longer stays.",
             "features": ["Seating area", "Queen bed", "Wi-Fi", "Air conditioning"],
-        }
+        },
+        "gallery": ["room5.jpg"],
     },
     "executivo-master": {
         "pt": {
@@ -99,7 +104,8 @@ ROOM_CATEGORIES = {
             "name": "Executive Master",
             "desc": "Exclusive experience with maximum comfort and elegance.",
             "features": ["Premium suite", "Living area", "Mini-bar", "Premium view"],
-        }
+        },
+        "gallery": ["room6.jpg"],
     }
 }
 
@@ -280,7 +286,8 @@ def room_detail(lang, slug):
     room = ROOM_CATEGORIES.get(slug)
     if not room:
         abort(404)
-    content = room.get(lang, room["pt"])
+    content = dict(room.get(lang, room["pt"]))
+    content["gallery"] = room.get("gallery", [])
     return render_template(f"{lang}/room_detail.html", room=content, slug=slug)
 
 @bp.route('/')
