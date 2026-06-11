@@ -85,7 +85,7 @@ def update_pricing(lang):
         prices[room_slug] = new_price
         PriceManager.save_prices(prices)
         
-        message = f"Preço de {ROOM_NAMES.get(room_slug, {}).get('pt', room_slug)} atualizado para €{new_price:.2f}"
+        message = f"Preço de {ROOM_NAMES.get(room_slug, {}).get('pt', room_slug)} atualizado para MZN {new_price:.2f}"
         return jsonify({'success': True, 'message': message})
     except Exception as e:
         return jsonify({'success': False, 'message': str(e)}), 500
