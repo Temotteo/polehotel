@@ -40,7 +40,7 @@ ROOM_CATEGORIES = {
             "desc": "Functional and comfortable option for practical stays.",
             "features": ["Double bed", "Air conditioning", "Wi-Fi", "Private bathroom"],
         },
-        "gallery": ["room1.jpg"],
+        "gallery": ["E1.jpg", "E2.jpg", "E3.jpg"],
     },
     "casal-standard": {
         "pt": {
@@ -53,7 +53,7 @@ ROOM_CATEGORIES = {
             "desc": "Balanced comfort with a welcoming design.",
             "features": ["Double bed", "TV", "Wi-Fi", "Air conditioning"],
         },
-        "gallery": ["room2.jpg"],
+        "gallery": ["4.jpg", "5.jpg", "6.jpg"],
     },
     "duplo-standard": {
         "pt": {
@@ -66,7 +66,7 @@ ROOM_CATEGORIES = {
             "desc": "Ideal for two guests with space and comfort.",
             "features": ["Twin beds", "TV", "Wi-Fi", "Air conditioning"],
         },
-        "gallery": ["room3.jpg"],
+        "gallery": ["7.jpg", "8.jpg", "9.jpg"],
     },
     "executivo-especial": {
         "pt": {
@@ -79,7 +79,7 @@ ROOM_CATEGORIES = {
             "desc": "Premium category with refined details.",
             "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"],
         },
-        "gallery": ["room4.jpg"],
+        "gallery": ["10.jpg", "11.jpg", "12.jpg"],
     },
     "executivo-junior": {
         "pt": {
@@ -92,7 +92,7 @@ ROOM_CATEGORIES = {
             "desc": "Spacious layout, ideal for longer stays.",
             "features": ["Seating area", "Queen bed", "Wi-Fi", "Air conditioning"],
         },
-        "gallery": ["room5.jpg"],
+        "gallery": ["13.jpg", "14.jpg", "15.jpg"],
     },
     "executivo-master": {
         "pt": {
@@ -105,7 +105,7 @@ ROOM_CATEGORIES = {
             "desc": "Exclusive experience with maximum comfort and elegance.",
             "features": ["Premium suite", "Living area", "Mini-bar", "Premium view"],
         },
-        "gallery": ["room6.jpg"],
+        "gallery": ["16.jpg", "17.jpg", "18.jpg"],
     }
 }
 
