@@ -80,7 +80,7 @@ ROOM_CATEGORIES = {
             "desc": "Premium category with refined details.",
             "features": ["Queen bed", "Mini-bar", "Desk", "Wi-Fi"],
         },
-        "gallery": ["10.jpg", "11.jpg", "12.jpg"],
+        "gallery": ["12.jpg", "11.jpg"],
     },
     "executivo-junior": {
         "pt": {
