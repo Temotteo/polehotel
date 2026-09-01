@@ -15,6 +15,7 @@ def create_app():
         CONTACT_EMAIL,
         CONTACT_PHONE_DISPLAY,
         CONTACT_PHONE_TEL,
+        CONTACT_WHATSAPP_DISPLAY,
         CONTACT_WHATSAPP_URL,
     )
     from .blueprints.admin import bp as admin_bp
@@ -55,6 +56,7 @@ def create_app():
                 "email": CONTACT_EMAIL,
                 "phone_display": CONTACT_PHONE_DISPLAY,
                 "phone_tel": CONTACT_PHONE_TEL,
+                "whatsapp_display": CONTACT_WHATSAPP_DISPLAY,
                 "whatsapp_url": CONTACT_WHATSAPP_URL,
             },
         )

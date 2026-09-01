@@ -9,10 +9,11 @@ from email.mime.multipart import MIMEMultipart
 # CONFIGURAÇÃO DE EMAIL (GMAIL)
 # ===============================
 
-CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "info@polehotel.com")
-CONTACT_PHONE_DISPLAY = os.getenv("CONTACT_PHONE_DISPLAY", "+258 00 000 0000")
-CONTACT_PHONE_TEL = os.getenv("CONTACT_PHONE_TEL", "+258000000000")
-CONTACT_WHATSAPP_NUMBER = os.getenv("CONTACT_WHATSAPP_NUMBER", "258000000000")
+CONTACT_EMAIL = os.getenv("CONTACT_EMAIL", "reservation@polehotel.co.mz")
+CONTACT_PHONE_DISPLAY = os.getenv("CONTACT_PHONE_DISPLAY", "+258 85 727 7839 / +258 86 934 9474")
+CONTACT_PHONE_TEL = os.getenv("CONTACT_PHONE_TEL", "+258857277839")
+CONTACT_WHATSAPP_NUMBER = os.getenv("CONTACT_WHATSAPP_NUMBER", "258869349474")
+CONTACT_WHATSAPP_DISPLAY = os.getenv("CONTACT_WHATSAPP_DISPLAY", "+258 86 934 9474")
 CONTACT_WHATSAPP_URL = f"https://wa.me/{CONTACT_WHATSAPP_NUMBER}"
 
 EMAIL_REMETENTE = os.getenv("EMAIL_REMETENTE", "noreply@polehotel.com")
@@ -145,7 +146,7 @@ def send_booking_confirmation_email(reservation, lang):
                     <p>Em breve receberá uma confirmação final via email. Pode contactar-nos através de:</p>
                     <ul>
                         <li>📧 Email: {CONTACT_EMAIL}</li>
-                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_PHONE_DISPLAY}</a></li>
+                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_WHATSAPP_DISPLAY}</a></li>
                         <li>🌐 Website: <a href="https://polehotel.onrender.com">polehotel.onrender.com</a></li>
                     </ul>
                     
@@ -186,7 +187,7 @@ def send_booking_confirmation_email(reservation, lang):
                     <p>You will soon receive a final confirmation via email. You can contact us through:</p>
                     <ul>
                         <li>📧 Email: {CONTACT_EMAIL}</li>
-                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_PHONE_DISPLAY}</a></li>
+                        <li>📱 WhatsApp: <a href="{CONTACT_WHATSAPP_URL}">{CONTACT_WHATSAPP_DISPLAY}</a></li>
                         <li>🌐 Website: <a href="https://polehotel.onrender.com">polehotel.onrender.com</a></li>
                     </ul>
                     
