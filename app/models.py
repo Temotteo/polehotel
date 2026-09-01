@@ -16,15 +16,16 @@ except Exception as e:
 PRICES_FILE = DATA_DIR / 'prices.json'
 RESERVATIONS_FILE = DATA_DIR / 'reservations.json'
 BEDS24_SETTINGS_FILE = DATA_DIR / 'beds24_settings.json'
+PRICE_VERSION = '2026-09-01-published-rates'
 
 # Default prices
 DEFAULT_PRICES = {
-    "casal-economico": 50.00,
-    "casal-standard": 75.00,
-    "duplo-standard": 80.00,
-    "executivo-especial": 120.00,
-    "executivo-junior": 130.00,
-    "executivo-master": 180.00
+    "casal-economico": 6000.00,
+    "casal-standard": 6400.00,
+    "duplo-standard": 5800.00,
+    "executivo-especial": 12000.00,
+    "executivo-junior": 8500.00,
+    "executivo-master": 12000.00
 }
 
 ROOM_NAMES = {
@@ -72,13 +73,30 @@ class PriceManager:
     @staticmethod
     def load_prices():
         try:
+            prices = {}
             if PRICES_FILE.exists():
                 with open(PRICES_FILE, 'r') as f:
-                    return json.load(f)
-            return DEFAULT_PRICES.copy()
+                    prices = json.load(f)
+
+            if not isinstance(prices, dict) or prices.get('_version') != PRICE_VERSION:
+                prices = DEFAULT_PRICES.copy()
+                prices['_version'] = PRICE_VERSION
+                PriceManager.save_prices(prices)
+                return prices
+
+            changed = False
+            for room_slug, price in DEFAULT_PRICES.items():
+                if room_slug not in prices:
+                    prices[room_slug] = price
+                    changed = True
+            if changed:
+                PriceManager.save_prices(prices)
+            return prices
         except Exception as e:
             print(f"Erro ao carregar preços: {e}")
-            return DEFAULT_PRICES.copy()
+            prices = DEFAULT_PRICES.copy()
+            prices['_version'] = PRICE_VERSION
+            return prices
 
     @staticmethod
     def save_prices(prices):
