@@ -28,24 +28,44 @@
       {'name':'Events Tent', 'slug':'tenda'}
     ] %}
 
+    <div class="gallery-category-grid">
+      {% for cat in categories %}
+      <button class="gallery-category-card" type="button" data-bs-toggle="modal" data-bs-target="#gallery-{{ cat.slug }}" aria-label="View {{ cat.name }} photographs">
+        <img src="{{ url_for('static', filename='img/gallery/' ~ cat.slug ~ '/1.jpg') }}" alt="{{ cat.name }}" loading="lazy">
+        <span class="gallery-category-card__shade"></span>
+        <span class="gallery-category-card__title">{{ cat.name }}</span>
+        <span class="gallery-category-card__count">6 photographs</span>
+      </button>
+      {% endfor %}
+    </div>
+
     {% for cat in categories %}
-    <div class="mb-5">
-
-      <h3 class="mb-4">{{ cat.name }}</h3>
-
-      <div class="row g-4">
-        {% for i in range(1,7) %}
-        <div class="col-md-4">
-          <img
-            src="{{ url_for('static', filename='img/gallery/' ~ cat.slug ~ '/' ~ i ~ '.jpg') }}"
-            class="img-fluid rounded-4 shadow-sm"
-            alt="{{ cat.name }}"
-            loading="lazy"
-          >
+    <div class="modal fade gallery-modal" id="gallery-{{ cat.slug }}" tabindex="-1" aria-labelledby="gallery-title-{{ cat.slug }}" aria-hidden="true">
+      <div class="modal-dialog modal-xl modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h2 class="modal-title fs-4" id="gallery-title-{{ cat.slug }}">{{ cat.name }}</h2>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <div id="carousel-{{ cat.slug }}" class="carousel slide" data-bs-interval="false">
+              <div class="carousel-inner">
+                {% for i in range(1,7) %}
+                <div class="carousel-item {% if loop.first %}active{% endif %}">
+                  <img src="{{ url_for('static', filename='img/gallery/' ~ cat.slug ~ '/' ~ i ~ '.jpg') }}" class="d-block w-100" alt="{{ cat.name }} - photograph {{ i }}" loading="lazy">
+                </div>
+                {% endfor %}
+              </div>
+              <button class="carousel-control-prev" type="button" data-bs-target="#carousel-{{ cat.slug }}" data-bs-slide="prev" aria-label="Previous photograph">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              </button>
+              <button class="carousel-control-next" type="button" data-bs-target="#carousel-{{ cat.slug }}" data-bs-slide="next" aria-label="Next photograph">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              </button>
+            </div>
+          </div>
         </div>
-        {% endfor %}
       </div>
-
     </div>
     {% endfor %}
 
