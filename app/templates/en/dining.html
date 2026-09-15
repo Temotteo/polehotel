@@ -20,9 +20,56 @@
   </div>
 </section>
 
-<div class="container py-5">
-   <!-- <h2 class="mb-4">Restaurant & Bar</h2> -->  <!-- codigo original comentado -->
-  <p>Menus (drinks, wine, dining), opening hours and photos.</p>
-</div>
+<section class="dining-menu py-5">
+  <div class="container">
+    <div class="dining-menu__intro">
+      <p class="section-kicker">Restaurant and Bar</p>
+      <h2>Our menus</h2>
+      <p>Explore Pole Hotel's selection and find something for every occasion.</p>
+    </div>
+
+    <nav class="dining-menu__tabs" aria-label="Restaurant menus">
+      <div class="nav" role="tablist">
+        {% for menu in menus %}
+        <button class="nav-link {% if loop.first %}active{% endif %}" id="{{ menu.id }}-tab" data-bs-toggle="tab" data-bs-target="#{{ menu.id }}-menu" type="button" role="tab" aria-controls="{{ menu.id }}-menu" aria-selected="{{ 'true' if loop.first else 'false' }}">
+          {{ menu.labels[lang].title }}
+        </button>
+        {% endfor %}
+      </div>
+    </nav>
+
+    <div class="tab-content">
+      {% for menu in menus %}
+      <div class="tab-pane fade {% if loop.first %}show active{% endif %}" id="{{ menu.id }}-menu" role="tabpanel" aria-labelledby="{{ menu.id }}-tab" tabindex="0">
+        <div class="dining-menu__heading">
+          <h3>{{ menu.labels[lang].title }}</h3>
+          <p>{{ menu.labels[lang].intro }}</p>
+        </div>
+        <div class="accordion dining-menu__accordion" id="{{ menu.id }}-accordion">
+          {% for section in menu.sections %}
+          <article class="accordion-item">
+            <h4 class="accordion-header" id="{{ menu.id }}-heading-{{ loop.index }}">
+              <button class="accordion-button {% if not loop.first %}collapsed{% endif %}" type="button" data-bs-toggle="collapse" data-bs-target="#{{ menu.id }}-section-{{ loop.index }}" aria-expanded="{{ 'true' if loop.first else 'false' }}" aria-controls="{{ menu.id }}-section-{{ loop.index }}">
+                <span>{{ section.title[lang] }}</span>
+                {% if section.subtitle %}<small>{{ section.subtitle[lang] }}</small>{% endif %}
+              </button>
+            </h4>
+            <div id="{{ menu.id }}-section-{{ loop.index }}" class="accordion-collapse collapse {% if loop.first %}show{% endif %}" aria-labelledby="{{ menu.id }}-heading-{{ loop.index }}" data-bs-parent="#{{ menu.id }}-accordion">
+              <div class="accordion-body">
+                <ul class="menu-items">
+                  {% for item in section['items'] %}
+                  <li><span>{{ item.name }}</span><strong>MZN {{ item.price }}</strong></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
 
 {% endblock %}

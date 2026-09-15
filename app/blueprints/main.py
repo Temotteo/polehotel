@@ -1,5 +1,6 @@
 from flask import Blueprint, render_template, request, abort, flash, redirect, url_for
 from app.models import ReservationManager, PriceManager
+from app.menu_data import DINING_MENUS
 import os
 import smtplib
 from email.mime.text import MIMEText
@@ -355,7 +356,7 @@ def rooms(lang):
 
 @bp.route('/<lang>/dining')
 def dining(lang):
-    return render_template(tpath('dining'))
+    return render_template(tpath('dining'), menus=DINING_MENUS)
 
 @bp.route('/<lang>/events', methods=['GET','POST'])
 def events(lang):
