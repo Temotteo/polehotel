@@ -1,7 +1,16 @@
 from flask import Blueprint, render_template, request, jsonify, redirect, url_for, flash, session
 from datetime import datetime
 from app.beds24 import Beds24Client, Beds24Error
-from app.models import Beds24SettingsManager, PriceManager, ReservationManager, ROOM_NAMES
+from app.models import (
+    Beds24SettingsManager,
+    OPERATIONS_SERVICES,
+    OPERATIONS_STATUSES,
+    OPERATIONS_STATUS_LABELS,
+    OperationsManager,
+    PriceManager,
+    ReservationManager,
+    ROOM_NAMES,
+)
 
 bp = Blueprint('admin', __name__, url_prefix='/<lang>/admin')
 
@@ -48,6 +57,7 @@ def logout(lang):
 def dashboard(lang):
     reservations = ReservationManager.get_all_reservations()
     prices = PriceManager.load_prices()
+    operations = OperationsManager.load_services()
     
     # Statistics
     stats = {
@@ -55,7 +65,8 @@ def dashboard(lang):
         'confirmed': len([r for r in reservations if r.get('status') == 'confirmada']),
         'pending': len([r for r in reservations if r.get('status') == 'pendente']),
         'cancelled': len([r for r in reservations if r.get('status') == 'cancelada']),
-        'completed': len([r for r in reservations if r.get('status') == 'finalizada'])
+        'completed': len([r for r in reservations if r.get('status') == 'finalizada']),
+        'operational_services': len([s for s in operations.values() if s.get('status') == 'operacional']),
     }
     recent_reservations = list(reversed(reservations))[:10]
     
@@ -65,6 +76,38 @@ def dashboard(lang):
                          prices=prices,
                          stats=stats,
                          room_names=ROOM_NAMES)
+
+@bp.route('/operations', methods=['GET', 'POST'])
+@require_admin
+def operations(lang):
+    services = OperationsManager.load_services()
+
+    if request.method == 'POST':
+        for slug in OPERATIONS_SERVICES:
+            status = request.form.get(f'{slug}_status', 'operacional')
+            services[slug] = {
+                'status': status if status in OPERATIONS_STATUSES else 'operacional',
+                'responsible': request.form.get(f'{slug}_responsible', '').strip(),
+                'hours': request.form.get(f'{slug}_hours', '').strip(),
+                'capacity': request.form.get(f'{slug}_capacity', '').strip(),
+                'internal_contact': request.form.get(f'{slug}_internal_contact', '').strip(),
+                'notes': request.form.get(f'{slug}_notes', '').strip(),
+                'updated_at': datetime.now().isoformat(timespec='seconds'),
+            }
+
+        if OperationsManager.save_services(services):
+            flash('Operações internas guardadas.' if lang == 'pt' else 'Internal operations saved.', 'success')
+        else:
+            flash('Não foi possível guardar as operações.' if lang == 'pt' else 'Could not save operations.', 'danger')
+        return redirect(url_for('admin.operations', lang=lang))
+
+    return render_template(
+        f"{lang}/admin_operations.html",
+        services=services,
+        service_catalog=OPERATIONS_SERVICES,
+        statuses=OPERATIONS_STATUSES,
+        status_labels=OPERATIONS_STATUS_LABELS[lang],
+    )
 
 @bp.route('/pricing')
 @require_admin

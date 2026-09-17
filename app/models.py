@@ -16,6 +16,7 @@ except Exception as e:
 PRICES_FILE = DATA_DIR / 'prices.json'
 RESERVATIONS_FILE = DATA_DIR / 'reservations.json'
 BEDS24_SETTINGS_FILE = DATA_DIR / 'beds24_settings.json'
+OPERATIONS_FILE = DATA_DIR / 'operations.json'
 PRICE_VERSION = '2026-09-01-published-rates'
 
 # Default prices
@@ -50,6 +51,31 @@ BEDS24_DEFAULT_SETTINGS = {
     'last_test_at': '',
     'last_test_status': '',
     'last_test_message': '',
+}
+
+OPERATIONS_SERVICES = {
+    'restauracao-bar': {'pt': 'Restauração e Bar', 'en': 'Restaurant and Bar'},
+    'salao-cabeleireiro': {'pt': 'Salão de Cabeleireiro', 'en': 'Hair Salon'},
+    'sauna': {'pt': 'Sauna', 'en': 'Sauna'},
+    'salas-conferencia': {'pt': 'Salas de Conferência', 'en': 'Conference Rooms'},
+    'salao-eventos': {'pt': 'Salão de Eventos', 'en': 'Events Hall'},
+    'transfer': {'pt': 'Serviços de Transfer', 'en': 'Transfer Services'},
+}
+
+OPERATIONS_STATUSES = ['operacional', 'limitado', 'manutencao', 'indisponivel']
+OPERATIONS_STATUS_LABELS = {
+    'pt': {
+        'operacional': 'Operacional',
+        'limitado': 'Serviço limitado',
+        'manutencao': 'Em manutenção',
+        'indisponivel': 'Indisponível',
+    },
+    'en': {
+        'operacional': 'Operational',
+        'limitado': 'Limited service',
+        'manutencao': 'Under maintenance',
+        'indisponivel': 'Unavailable',
+    },
 }
 
 # Initialize prices file if it doesn't exist
@@ -166,6 +192,50 @@ class Beds24SettingsManager:
         if len(value) <= 8:
             return '****'
         return f"{value[:4]}****{value[-4:]}"
+
+
+class OperationsManager:
+    @staticmethod
+    def default_services():
+        return {
+            slug: {
+                'status': 'operacional',
+                'responsible': '',
+                'hours': '',
+                'capacity': '',
+                'internal_contact': '',
+                'notes': '',
+                'updated_at': '',
+            }
+            for slug in OPERATIONS_SERVICES
+        }
+
+    @staticmethod
+    def load_services():
+        services = OperationsManager.default_services()
+        try:
+            if OPERATIONS_FILE.exists():
+                with open(OPERATIONS_FILE, 'r', encoding='utf-8') as f:
+                    saved = json.load(f)
+                if isinstance(saved, dict):
+                    for slug in services:
+                        if isinstance(saved.get(slug), dict):
+                            services[slug].update(saved[slug])
+                            if services[slug].get('status') not in OPERATIONS_STATUSES:
+                                services[slug]['status'] = 'operacional'
+        except Exception as e:
+            print(f"Erro ao carregar operações internas: {e}")
+        return services
+
+    @staticmethod
+    def save_services(services):
+        try:
+            with open(OPERATIONS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(services, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"Erro ao guardar operações internas: {e}")
+            return False
 
 
 class ReservationManager:

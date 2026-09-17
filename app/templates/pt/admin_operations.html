@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block title %} - Operações Internas {% endblock %}
+
+{% block content %}
+<main class="container-fluid py-4 operations-panel">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+      <p class="text-uppercase small mb-1 operations-panel__eyebrow">Painel administrativo</p>
+      <h1 class="h3 mb-1">Operações Internas</h1>
+      <p class="text-muted mb-0">Gestão diária dos serviços do hotel. Esta informação não aparece no site público.</p>
+    </div>
+    <a href="{{ url_for('admin.dashboard', lang='pt') }}" class="btn btn-outline-secondary btn-sm">Voltar ao painel</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <form method="post" action="{{ url_for('admin.operations', lang='pt') }}">
+    <div class="operations-list">
+      {% for slug, service in service_catalog.items() %}
+        {% set current = services[slug] %}
+        <section class="operations-service" aria-labelledby="service-{{ slug }}">
+          <header class="operations-service__header">
+            <div>
+              <h2 id="service-{{ slug }}" class="h5 mb-1">{{ service.pt }}</h2>
+              {% if current.updated_at %}
+                <p class="text-muted small mb-0">Última actualização: {{ current.updated_at.replace('T', ' ') }}</p>
+              {% else %}
+                <p class="text-muted small mb-0">Ainda sem actualizações registadas.</p>
+              {% endif %}
+            </div>
+            <span class="operations-status operations-status--{{ current.status }}">{{ status_labels[current.status] }}</span>
+          </header>
+
+          <div class="row g-3">
+            <div class="col-md-4 col-xl-3">
+              <label class="form-label" for="{{ slug }}_status">Estado</label>
+              <select class="form-select" id="{{ slug }}_status" name="{{ slug }}_status">
+                {% for status in statuses %}
+                  <option value="{{ status }}" {% if current.status == status %}selected{% endif %}>{{ status_labels[status] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-md-4 col-xl-3">
+              <label class="form-label" for="{{ slug }}_responsible">Responsável</label>
+              <input class="form-control" id="{{ slug }}_responsible" name="{{ slug }}_responsible" value="{{ current.responsible }}" autocomplete="off">
+            </div>
+            <div class="col-md-4 col-xl-3">
+              <label class="form-label" for="{{ slug }}_hours">Horário</label>
+              <input class="form-control" id="{{ slug }}_hours" name="{{ slug }}_hours" value="{{ current.hours }}" placeholder="Ex.: 08:00 - 22:00">
+            </div>
+            <div class="col-md-4 col-xl-3">
+              <label class="form-label" for="{{ slug }}_capacity">Capacidade</label>
+              <input class="form-control" id="{{ slug }}_capacity" name="{{ slug }}_capacity" value="{{ current.capacity }}" placeholder="Ex.: 50 pessoas">
+            </div>
+            <div class="col-md-5">
+              <label class="form-label" for="{{ slug }}_internal_contact">Contacto interno</label>
+              <input class="form-control" id="{{ slug }}_internal_contact" name="{{ slug }}_internal_contact" value="{{ current.internal_contact }}" placeholder="Extensão, telefone ou e-mail">
+            </div>
+            <div class="col-md-7">
+              <label class="form-label" for="{{ slug }}_notes">Notas operacionais</label>
+              <textarea class="form-control operations-notes" id="{{ slug }}_notes" name="{{ slug }}_notes" rows="2" placeholder="Turnos, manutenção, pedidos pendentes ou instruções internas">{{ current.notes }}</textarea>
+            </div>
+          </div>
+        </section>
+      {% endfor %}
+    </div>
+
+    <div class="operations-actions">
+      <button type="submit" class="btn btn-primary">Guardar alterações</button>
+    </div>
+  </form>
+</main>
+{% endblock %}
