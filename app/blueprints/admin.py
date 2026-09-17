@@ -4,9 +4,13 @@ from app.beds24 import Beds24Client, Beds24Error
 from app.models import (
     Beds24SettingsManager,
     OPERATIONS_SERVICES,
+    OPERATIONS_ORDER_STATUSES,
+    OPERATIONS_ORDER_STATUS_LABELS,
     OPERATIONS_STATUSES,
     OPERATIONS_STATUS_LABELS,
+    OperationsArticleManager,
     OperationsManager,
+    OperationsOrderManager,
     PriceManager,
     ReservationManager,
     ROOM_NAMES,
@@ -58,6 +62,7 @@ def dashboard(lang):
     reservations = ReservationManager.get_all_reservations()
     prices = PriceManager.load_prices()
     operations = OperationsManager.load_services()
+    order_summary = OperationsOrderManager.summary_by_area()
     
     # Statistics
     stats = {
@@ -67,6 +72,7 @@ def dashboard(lang):
         'cancelled': len([r for r in reservations if r.get('status') == 'cancelada']),
         'completed': len([r for r in reservations if r.get('status') == 'finalizada']),
         'operational_services': len([s for s in operations.values() if s.get('status') == 'operacional']),
+        'operations_requests': sum(summary['total'] for summary in order_summary.values()),
     }
     recent_reservations = list(reversed(reservations))[:10]
     
@@ -81,6 +87,11 @@ def dashboard(lang):
 @require_admin
 def operations(lang):
     services = OperationsManager.load_services()
+    order_summary = OperationsOrderManager.summary_by_area()
+    article_counts = {
+        slug: len(OperationsArticleManager.articles_for_area(slug))
+        for slug in OPERATIONS_SERVICES
+    }
 
     if request.method == 'POST':
         for slug in OPERATIONS_SERVICES:
@@ -107,7 +118,125 @@ def operations(lang):
         service_catalog=OPERATIONS_SERVICES,
         statuses=OPERATIONS_STATUSES,
         status_labels=OPERATIONS_STATUS_LABELS[lang],
+        order_summary=order_summary,
+        article_counts=article_counts,
     )
+
+
+@bp.route('/operations/<area_slug>')
+@require_admin
+def operation_area(lang, area_slug):
+    if area_slug not in OPERATIONS_SERVICES:
+        flash('Área de operação não encontrada.' if lang == 'pt' else 'Operations area not found.', 'danger')
+        return redirect(url_for('admin.operations', lang=lang))
+
+    services = OperationsManager.load_services()
+    return render_template(
+        f"{lang}/admin_operation_area.html",
+        area_slug=area_slug,
+        area=OPERATIONS_SERVICES[area_slug],
+        service=services[area_slug],
+        articles=OperationsArticleManager.articles_for_area(area_slug),
+        active_articles=OperationsArticleManager.articles_for_area(area_slug, active_only=True),
+        orders=OperationsOrderManager.orders_for_area(area_slug),
+        reservations=list(reversed(ReservationManager.get_all_reservations())),
+        order_statuses=OPERATIONS_ORDER_STATUSES,
+        order_status_labels=OPERATIONS_ORDER_STATUS_LABELS[lang],
+        service_status_label=OPERATIONS_STATUS_LABELS[lang][services[area_slug]['status']],
+    )
+
+
+@bp.route('/operations/<area_slug>/articles', methods=['POST'])
+@require_admin
+def create_operation_article(lang, area_slug):
+    if area_slug not in OPERATIONS_SERVICES:
+        return redirect(url_for('admin.operations', lang=lang))
+    article = OperationsArticleManager.create_article(
+        area_slug,
+        request.form.get('name', ''),
+        request.form.get('description', ''),
+        request.form.get('price', 0),
+        request.form.get('active') == 'on',
+    )
+    if article:
+        flash('Artigo adicionado.' if lang == 'pt' else 'Item added.', 'success')
+    else:
+        flash('Preencha o nome e um preço válido.' if lang == 'pt' else 'Enter a name and a valid price.', 'danger')
+    return redirect(url_for('admin.operation_area', lang=lang, area_slug=area_slug))
+
+
+@bp.route('/operations/<area_slug>/articles/<int:article_id>', methods=['POST'])
+@require_admin
+def update_operation_article(lang, area_slug, article_id):
+    article = OperationsArticleManager.update_article(
+        article_id,
+        area_slug,
+        request.form.get('name', ''),
+        request.form.get('description', ''),
+        request.form.get('price', 0),
+        request.form.get('active') == 'on',
+    )
+    if article:
+        flash('Artigo actualizado.' if lang == 'pt' else 'Item updated.', 'success')
+    else:
+        flash('Não foi possível actualizar o artigo.' if lang == 'pt' else 'Could not update the item.', 'danger')
+    return redirect(url_for('admin.operation_area', lang=lang, area_slug=area_slug))
+
+
+@bp.route('/operations/<area_slug>/articles/<int:article_id>/delete', methods=['POST'])
+@require_admin
+def delete_operation_article(lang, area_slug, article_id):
+    deleted = OperationsArticleManager.delete_article(article_id, area_slug)
+    flash(
+        ('Artigo eliminado.' if lang == 'pt' else 'Item deleted.')
+        if deleted else ('Artigo não encontrado.' if lang == 'pt' else 'Item not found.'),
+        'success' if deleted else 'danger',
+    )
+    return redirect(url_for('admin.operation_area', lang=lang, area_slug=area_slug))
+
+
+@bp.route('/operations/<area_slug>/orders', methods=['POST'])
+@require_admin
+def create_operation_order(lang, area_slug):
+    reservation_id = request.form.get('reservation_id', '').strip()
+    customer_name = request.form.get('customer_name', '').strip()
+    customer_contact = request.form.get('customer_contact', '').strip()
+
+    if reservation_id:
+        try:
+            reservation = ReservationManager.get_reservation(int(reservation_id))
+        except ValueError:
+            reservation = None
+        if reservation:
+            customer_name = customer_name or reservation.get('guest_name', '')
+            customer_contact = customer_contact or reservation.get('phone') or reservation.get('email', '')
+
+    order = OperationsOrderManager.create_order(
+        area_slug,
+        request.form.get('article_id', ''),
+        request.form.get('quantity', 1),
+        customer_name,
+        customer_contact,
+        reservation_id,
+        request.form.get('notes', ''),
+    )
+    if order:
+        flash('Pedido criado e associado ao cliente.' if lang == 'pt' else 'Request created and linked to the customer.', 'success')
+    else:
+        flash('Selecione um artigo activo e indique o cliente.' if lang == 'pt' else 'Select an active item and provide the customer.', 'danger')
+    return redirect(url_for('admin.operation_area', lang=lang, area_slug=area_slug))
+
+
+@bp.route('/operations/<area_slug>/orders/<int:order_id>/status', methods=['POST'])
+@require_admin
+def update_operation_order_status(lang, area_slug, order_id):
+    order = OperationsOrderManager.update_status(order_id, area_slug, request.form.get('status', ''))
+    flash(
+        ('Estado do pedido actualizado.' if lang == 'pt' else 'Request status updated.')
+        if order else ('Não foi possível actualizar o pedido.' if lang == 'pt' else 'Could not update the request.'),
+        'success' if order else 'danger',
+    )
+    return redirect(url_for('admin.operation_area', lang=lang, area_slug=area_slug))
 
 @bp.route('/pricing')
 @require_admin

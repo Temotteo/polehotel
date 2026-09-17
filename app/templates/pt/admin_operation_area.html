@@ -1,0 +1,116 @@
+{% extends "base.html" %}
+
+{% block title %} - {{ area.pt }} {% endblock %}
+
+{% block content %}
+<main class="container-fluid py-4 operations-panel">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-3 mb-4">
+    <div>
+      <p class="text-uppercase small mb-1 operations-panel__eyebrow">Operações internas</p>
+      <div class="d-flex flex-wrap align-items-center gap-2">
+        <h1 class="h3 mb-0">{{ area.pt }}</h1>
+        <span class="operations-status operations-status--{{ service.status }}">{{ service_status_label }}</span>
+      </div>
+    </div>
+    <a href="{{ url_for('admin.operations', lang='pt') }}" class="btn btn-outline-secondary btn-sm">Voltar às operações</a>
+  </div>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Fechar"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <section class="operations-area-summary mb-4" aria-label="Resumo da área">
+    <div><span>Artigos</span><strong>{{ articles|length }}</strong></div>
+    <div><span>Pedidos</span><strong>{{ orders|length }}</strong></div>
+    <div><span>Responsável</span><strong>{{ service.responsible or 'Por definir' }}</strong></div>
+    <div><span>Horário</span><strong>{{ service.hours or 'Por definir' }}</strong></div>
+  </section>
+
+  <div class="row g-4 align-items-start">
+    <section class="col-xl-8" aria-labelledby="articles-heading">
+      <div class="operations-workspace">
+        <div class="operations-workspace__header">
+          <div>
+            <h2 id="articles-heading" class="h5 mb-1">Artigos e preços</h2>
+            <p class="text-muted small mb-0">Crie, edite ou retire itens desta área. Os preços são em MZN.</p>
+          </div>
+        </div>
+
+        <form class="operations-new-article" method="post" action="{{ url_for('admin.create_operation_article', lang='pt', area_slug=area_slug) }}">
+          <div class="row g-2">
+            <div class="col-md-4"><label class="visually-hidden" for="new-name">Artigo</label><input class="form-control" id="new-name" name="name" placeholder="Novo artigo ou serviço" required></div>
+            <div class="col-md-4"><label class="visually-hidden" for="new-description">Descrição</label><input class="form-control" id="new-description" name="description" placeholder="Descrição opcional"></div>
+            <div class="col-md-2"><label class="visually-hidden" for="new-price">Preço</label><div class="input-group"><span class="input-group-text">MZN</span><input class="form-control" id="new-price" type="number" name="price" min="0" step="0.01" placeholder="0,00" required></div></div>
+            <div class="col-md-2 d-flex align-items-center gap-2"><div class="form-check"><input class="form-check-input" type="checkbox" id="new-active" name="active" checked><label class="form-check-label" for="new-active">Activo</label></div><button class="btn btn-primary btn-sm ms-auto" type="submit">Adicionar</button></div>
+          </div>
+        </form>
+
+        <div class="operations-article-list">
+          {% for article in articles %}
+            <div class="operations-article-item">
+              <form class="operations-article-form" method="post" action="{{ url_for('admin.update_operation_article', lang='pt', area_slug=area_slug, article_id=article.id) }}">
+                <input class="form-control" name="name" value="{{ article.name }}" aria-label="Nome do artigo" required>
+                <input class="form-control" name="description" value="{{ article.description }}" aria-label="Descrição do artigo" placeholder="Descrição">
+                <div class="input-group"><span class="input-group-text">MZN</span><input class="form-control" type="number" name="price" min="0" step="0.01" value="{{ '%.2f'|format(article.price) }}" aria-label="Preço"></div>
+                <select class="form-select" name="active" aria-label="Disponibilidade"><option value="on" {% if article.active %}selected{% endif %}>Activo</option><option value="off" {% if not article.active %}selected{% endif %}>Inactivo</option></select>
+                <button class="btn btn-outline-primary btn-sm" type="submit">Guardar</button>
+              </form>
+              <form method="post" action="{{ url_for('admin.delete_operation_article', lang='pt', area_slug=area_slug, article_id=article.id) }}">
+                <button class="btn btn-outline-danger btn-sm" type="submit">Eliminar</button>
+              </form>
+            </div>
+          {% else %}
+            <p class="operations-empty mb-0">Ainda não existem artigos nesta área.</p>
+          {% endfor %}
+        </div>
+      </div>
+    </section>
+
+    <aside class="col-xl-4" aria-labelledby="new-order-heading">
+      <div class="operations-workspace">
+        <div class="operations-workspace__header">
+          <div>
+            <h2 id="new-order-heading" class="h5 mb-1">Novo pedido</h2>
+            <p class="text-muted small mb-0">Associe o artigo a um cliente ou reserva.</p>
+          </div>
+        </div>
+        {% if active_articles %}
+          <form method="post" action="{{ url_for('admin.create_operation_order', lang='pt', area_slug=area_slug) }}" class="row g-3">
+            <div class="col-8"><label class="form-label" for="article-id">Artigo</label><select class="form-select" id="article-id" name="article_id" required><option value="">Selecionar</option>{% for article in active_articles %}<option value="{{ article.id }}">{{ article.name }} - MZN {{ '%.2f'|format(article.price) }}</option>{% endfor %}</select></div>
+            <div class="col-4"><label class="form-label" for="quantity">Qtd.</label><input class="form-control" id="quantity" type="number" name="quantity" min="1" value="1" required></div>
+            <div class="col-12"><label class="form-label" for="reservation-id">Reserva associada</label><select class="form-select" id="reservation-id" name="reservation_id"><option value="">Sem reserva</option>{% for reservation in reservations %}<option value="{{ reservation.id }}">#{{ reservation.id }} - {{ reservation.guest_name }}</option>{% endfor %}</select><div class="form-text">Ao selecionar, pode deixar os dados do cliente vazios.</div></div>
+            <div class="col-md-6"><label class="form-label" for="customer-name">Cliente</label><input class="form-control" id="customer-name" name="customer_name" placeholder="Nome do cliente"></div>
+            <div class="col-md-6"><label class="form-label" for="customer-contact">Contacto</label><input class="form-control" id="customer-contact" name="customer_contact" placeholder="Telefone ou e-mail"></div>
+            <div class="col-12"><label class="form-label" for="order-notes">Notas</label><textarea class="form-control operations-notes" id="order-notes" name="notes" rows="2" placeholder="Detalhes do pedido"></textarea></div>
+            <div class="col-12"><button class="btn btn-primary w-100" type="submit">Criar pedido</button></div>
+          </form>
+        {% else %}
+          <p class="operations-empty mb-0">Adicione e active pelo menos um artigo antes de criar pedidos.</p>
+        {% endif %}
+      </div>
+    </aside>
+  </div>
+
+  <section class="operations-workspace mt-4" aria-labelledby="orders-heading">
+    <div class="operations-workspace__header">
+      <div><h2 id="orders-heading" class="h5 mb-1">Pedidos desta área</h2><p class="text-muted small mb-0">Os valores ficam guardados no pedido, mesmo que o artigo seja alterado depois.</p></div>
+    </div>
+    {% if orders %}
+      <div class="table-responsive"><table class="table operations-orders-table align-middle mb-0"><thead><tr><th>#</th><th>Artigo</th><th>Cliente</th><th>Qtd.</th><th>Total</th><th>Data</th><th>Estado</th></tr></thead><tbody>
+        {% for order in orders %}
+          <tr><td>#{{ order.id }}</td><td><strong>{{ order.article_name }}</strong>{% if order.notes %}<small>{{ order.notes }}</small>{% endif %}</td><td><strong>{{ order.customer_name }}</strong>{% if order.customer_contact %}<small>{{ order.customer_contact }}</small>{% endif %}{% if order.reservation_id %}<small>Reserva #{{ order.reservation_id }}</small>{% endif %}</td><td>{{ order.quantity }}</td><td>MZN {{ '%.2f'|format(order.total) }}</td><td>{{ order.created_at.replace('T', ' ') }}</td><td><form method="post" action="{{ url_for('admin.update_operation_order_status', lang='pt', area_slug=area_slug, order_id=order.id) }}" class="d-flex gap-2"><select class="form-select form-select-sm" name="status">{% for status in order_statuses %}<option value="{{ status }}" {% if order.status == status %}selected{% endif %}>{{ order_status_labels[status] }}</option>{% endfor %}</select><button class="btn btn-outline-primary btn-sm" type="submit">OK</button></form></td></tr>
+        {% endfor %}
+      </tbody></table></div>
+    {% else %}
+      <p class="operations-empty mb-0">Ainda não foram registados pedidos nesta área.</p>
+    {% endif %}
+  </section>
+</main>
+{% endblock %}

@@ -17,6 +17,8 @@ PRICES_FILE = DATA_DIR / 'prices.json'
 RESERVATIONS_FILE = DATA_DIR / 'reservations.json'
 BEDS24_SETTINGS_FILE = DATA_DIR / 'beds24_settings.json'
 OPERATIONS_FILE = DATA_DIR / 'operations.json'
+OPERATIONS_ARTICLES_FILE = DATA_DIR / 'operations_articles.json'
+OPERATIONS_ORDERS_FILE = DATA_DIR / 'operations_orders.json'
 PRICE_VERSION = '2026-09-01-published-rates'
 
 # Default prices
@@ -75,6 +77,22 @@ OPERATIONS_STATUS_LABELS = {
         'limitado': 'Limited service',
         'manutencao': 'Under maintenance',
         'indisponivel': 'Unavailable',
+    },
+}
+
+OPERATIONS_ORDER_STATUSES = ['novo', 'em_preparacao', 'concluido', 'cancelado']
+OPERATIONS_ORDER_STATUS_LABELS = {
+    'pt': {
+        'novo': 'Novo pedido',
+        'em_preparacao': 'Em preparação',
+        'concluido': 'Concluído',
+        'cancelado': 'Cancelado',
+    },
+    'en': {
+        'novo': 'New request',
+        'em_preparacao': 'In progress',
+        'concluido': 'Completed',
+        'cancelado': 'Cancelled',
     },
 }
 
@@ -236,6 +254,232 @@ class OperationsManager:
         except Exception as e:
             print(f"Erro ao guardar operações internas: {e}")
             return False
+
+
+class OperationsArticleManager:
+    @staticmethod
+    def normalize_article(article):
+        if not isinstance(article, dict) or article.get('area_slug') not in OPERATIONS_SERVICES:
+            return None
+        try:
+            price = max(0, float(article.get('price', 0)))
+            article_id = int(article.get('id', 0))
+        except (TypeError, ValueError):
+            return None
+        if article_id <= 0 or not str(article.get('name', '')).strip():
+            return None
+        return {
+            'id': article_id,
+            'area_slug': article['area_slug'],
+            'name': str(article.get('name', '')).strip(),
+            'description': str(article.get('description', '')).strip(),
+            'price': price,
+            'active': bool(article.get('active', True)),
+            'created_at': str(article.get('created_at', '')),
+            'updated_at': str(article.get('updated_at', '')),
+        }
+
+    @staticmethod
+    def load_articles():
+        try:
+            if OPERATIONS_ARTICLES_FILE.exists():
+                with open(OPERATIONS_ARTICLES_FILE, 'r', encoding='utf-8') as f:
+                    saved = json.load(f)
+                if isinstance(saved, list):
+                    return [article for item in saved if (article := OperationsArticleManager.normalize_article(item))]
+        except Exception as e:
+            print(f"Erro ao carregar artigos das operações: {e}")
+        return []
+
+    @staticmethod
+    def save_articles(articles):
+        try:
+            with open(OPERATIONS_ARTICLES_FILE, 'w', encoding='utf-8') as f:
+                json.dump(articles, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"Erro ao guardar artigos das operações: {e}")
+            return False
+
+    @staticmethod
+    def get_article(article_id):
+        for article in OperationsArticleManager.load_articles():
+            if article['id'] == article_id:
+                return article
+        return None
+
+    @staticmethod
+    def articles_for_area(area_slug, active_only=False):
+        articles = [article for article in OperationsArticleManager.load_articles() if article['area_slug'] == area_slug]
+        if active_only:
+            articles = [article for article in articles if article['active']]
+        return sorted(articles, key=lambda article: article['name'].lower())
+
+    @staticmethod
+    def create_article(area_slug, name, description, price, active=True):
+        if area_slug not in OPERATIONS_SERVICES or not str(name).strip():
+            return None
+        try:
+            price = max(0, float(price))
+        except (TypeError, ValueError):
+            return None
+        articles = OperationsArticleManager.load_articles()
+        article = {
+            'id': max((item['id'] for item in articles), default=0) + 1,
+            'area_slug': area_slug,
+            'name': str(name).strip(),
+            'description': str(description or '').strip(),
+            'price': price,
+            'active': bool(active),
+            'created_at': datetime.now().isoformat(timespec='seconds'),
+            'updated_at': datetime.now().isoformat(timespec='seconds'),
+        }
+        articles.append(article)
+        return article if OperationsArticleManager.save_articles(articles) else None
+
+    @staticmethod
+    def update_article(article_id, area_slug, name, description, price, active):
+        try:
+            price = max(0, float(price))
+        except (TypeError, ValueError):
+            return None
+        articles = OperationsArticleManager.load_articles()
+        for article in articles:
+            if article['id'] == article_id and article['area_slug'] == area_slug:
+                article.update({
+                    'name': str(name).strip(),
+                    'description': str(description or '').strip(),
+                    'price': price,
+                    'active': bool(active),
+                    'updated_at': datetime.now().isoformat(timespec='seconds'),
+                })
+                if not article['name']:
+                    return None
+                return article if OperationsArticleManager.save_articles(articles) else None
+        return None
+
+    @staticmethod
+    def delete_article(article_id, area_slug):
+        articles = OperationsArticleManager.load_articles()
+        filtered = [article for article in articles if not (article['id'] == article_id and article['area_slug'] == area_slug)]
+        if len(filtered) == len(articles):
+            return False
+        return OperationsArticleManager.save_articles(filtered)
+
+
+class OperationsOrderManager:
+    @staticmethod
+    def normalize_order(order):
+        if not isinstance(order, dict) or order.get('area_slug') not in OPERATIONS_SERVICES:
+            return None
+        try:
+            order_id = int(order.get('id', 0))
+            quantity = max(1, int(order.get('quantity', 1)))
+            unit_price = max(0, float(order.get('unit_price', 0)))
+        except (TypeError, ValueError):
+            return None
+        if order_id <= 0 or not str(order.get('customer_name', '')).strip():
+            return None
+        status = order.get('status', 'novo')
+        return {
+            'id': order_id,
+            'area_slug': order['area_slug'],
+            'article_id': order.get('article_id'),
+            'article_name': str(order.get('article_name', '')).strip() or 'Artigo removido',
+            'quantity': quantity,
+            'unit_price': unit_price,
+            'total': round(quantity * unit_price, 2),
+            'customer_name': str(order.get('customer_name', '')).strip(),
+            'customer_contact': str(order.get('customer_contact', '')).strip(),
+            'reservation_id': order.get('reservation_id') or '',
+            'status': status if status in OPERATIONS_ORDER_STATUSES else 'novo',
+            'notes': str(order.get('notes', '')).strip(),
+            'created_at': str(order.get('created_at', '')),
+            'updated_at': str(order.get('updated_at', '')),
+        }
+
+    @staticmethod
+    def load_orders():
+        try:
+            if OPERATIONS_ORDERS_FILE.exists():
+                with open(OPERATIONS_ORDERS_FILE, 'r', encoding='utf-8') as f:
+                    saved = json.load(f)
+                if isinstance(saved, list):
+                    return [order for item in saved if (order := OperationsOrderManager.normalize_order(item))]
+        except Exception as e:
+            print(f"Erro ao carregar pedidos das operações: {e}")
+        return []
+
+    @staticmethod
+    def save_orders(orders):
+        try:
+            with open(OPERATIONS_ORDERS_FILE, 'w', encoding='utf-8') as f:
+                json.dump(orders, f, indent=2, ensure_ascii=False)
+            return True
+        except Exception as e:
+            print(f"Erro ao guardar pedidos das operações: {e}")
+            return False
+
+    @staticmethod
+    def orders_for_area(area_slug):
+        return sorted(
+            [order for order in OperationsOrderManager.load_orders() if order['area_slug'] == area_slug],
+            key=lambda order: order.get('created_at', ''),
+            reverse=True,
+        )
+
+    @staticmethod
+    def create_order(area_slug, article_id, quantity, customer_name, customer_contact, reservation_id='', notes=''):
+        if area_slug not in OPERATIONS_SERVICES or not str(customer_name).strip():
+            return None
+        try:
+            article_id = int(article_id)
+            quantity = max(1, int(quantity))
+        except (TypeError, ValueError):
+            return None
+        article = OperationsArticleManager.get_article(article_id)
+        if not article or article['area_slug'] != area_slug or not article['active']:
+            return None
+        orders = OperationsOrderManager.load_orders()
+        order = {
+            'id': max((item['id'] for item in orders), default=0) + 1,
+            'area_slug': area_slug,
+            'article_id': article['id'],
+            'article_name': article['name'],
+            'quantity': quantity,
+            'unit_price': article['price'],
+            'total': round(quantity * article['price'], 2),
+            'customer_name': str(customer_name).strip(),
+            'customer_contact': str(customer_contact or '').strip(),
+            'reservation_id': str(reservation_id or '').strip(),
+            'status': 'novo',
+            'notes': str(notes or '').strip(),
+            'created_at': datetime.now().isoformat(timespec='seconds'),
+            'updated_at': datetime.now().isoformat(timespec='seconds'),
+        }
+        orders.append(order)
+        return order if OperationsOrderManager.save_orders(orders) else None
+
+    @staticmethod
+    def update_status(order_id, area_slug, status):
+        if status not in OPERATIONS_ORDER_STATUSES:
+            return None
+        orders = OperationsOrderManager.load_orders()
+        for order in orders:
+            if order['id'] == order_id and order['area_slug'] == area_slug:
+                order['status'] = status
+                order['updated_at'] = datetime.now().isoformat(timespec='seconds')
+                return order if OperationsOrderManager.save_orders(orders) else None
+        return None
+
+    @staticmethod
+    def summary_by_area():
+        summary = {slug: {'total': 0, 'open': 0} for slug in OPERATIONS_SERVICES}
+        for order in OperationsOrderManager.load_orders():
+            summary[order['area_slug']]['total'] += 1
+            if order['status'] in ('novo', 'em_preparacao'):
+                summary[order['area_slug']]['open'] += 1
+        return summary
 
 
 class ReservationManager:

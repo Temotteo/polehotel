@@ -24,6 +24,30 @@
     {% endif %}
   {% endwith %}
 
+  <section class="operations-hub mb-4" aria-label="Management by area">
+    <div class="operations-hub__heading">
+      <div>
+        <h2 class="h5 mb-1">Management by area</h2>
+        <p class="text-muted mb-0">Items, prices, and customer-linked requests.</p>
+      </div>
+    </div>
+    <div class="operations-hub__grid">
+      {% for slug, service in service_catalog.items() %}
+        <a class="operations-area-link" href="{{ url_for('admin.operation_area', lang='en', area_slug=slug) }}">
+          <div class="operations-area-link__top">
+            <h3 class="h6 mb-0">{{ service.en }}</h3>
+            <span class="operations-status operations-status--{{ services[slug].status }}">{{ status_labels[services[slug].status] }}</span>
+          </div>
+          <div class="operations-area-link__stats">
+            <span>{{ article_counts[slug] }} items</span>
+            <span>{{ order_summary[slug].total }} requests</span>
+            {% if order_summary[slug].open %}<strong>{{ order_summary[slug].open }} open</strong>{% endif %}
+          </div>
+        </a>
+      {% endfor %}
+    </div>
+  </section>
+
   <form method="post" action="{{ url_for('admin.operations', lang='en') }}">
     <div class="operations-list">
       {% for slug, service in service_catalog.items() %}
